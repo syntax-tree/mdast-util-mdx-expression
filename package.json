@@ -1,6 +1,6 @@
 {
   "name": "mdast-util-mdx-expression",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "mdast extension to parse and serialize MDX or MDX.js expressions",
   "license": "MIT",
   "keywords": [
