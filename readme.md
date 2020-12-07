@@ -9,8 +9,7 @@
 [![Chat][chat-badge]][chat]
 
 Extension for [`mdast-util-from-markdown`][from-markdown] and/or
-[`mdast-util-to-markdown`][to-markdown] to support expressions for MDX or MDX.js
-in **[mdast][]**.
+[`mdast-util-to-markdown`][to-markdown] to support MDX (or MDX.js) expressions.
 When parsing (`from-markdown`), must be combined with
 [`micromark-extension-mdx-expression`][extension].
 
@@ -120,7 +119,7 @@ b {true}.
 > `mdast-util-mdx-expression/from-markdown` and
 > `mdast-util-mdx-expression/to-markdown`.
 
-Support expressions in MDX or MDX.js.
+Support MDX (or MDX.js) expressions.
 The exports are extensions, respectively for
 [`mdast-util-from-markdown`][from-markdown] and
 [`mdast-util-to-markdown`][to-markdown].
@@ -146,8 +145,7 @@ interface MDXFlowExpression <: Literal {
 
 **MDXFlowExpression** (**[Literal][dfn-literal]**) represents a JavaScript
 expression embedded in flow (block).
-It can be used where **[flow expression][dfn-flow-expression-content]** content
-is expected.
+It can be used where **[flow][dfn-flow-content]** content is expected.
 Its content is represented by its `value` field.
 
 For example, the following markdown:
@@ -174,8 +172,7 @@ interface MDXTextExpression <: Literal {
 
 **MDXTextExpression** (**[Literal][dfn-literal]**) represents a JavaScript
 expression embedded in text (span, inline).
-It can be used where **[phrasing expression][dfn-phrasing-expression-content]**
-content is expected.
+It can be used where **[phrasing][dfn-phrasing-content]** content is expected.
 Its content is represented by its `value` field.
 
 For example, the following markdown:
@@ -192,32 +189,16 @@ Yields:
 
 ### Content model
 
-#### `FlowExpressionContent`
+#### `FlowContent` (MDX expression)
 
 ```idl
-type FlowExpressionContent = MDXFlowExpression
+type FlowContentMdxExpression = MDXFlowExpression | FlowContent
 ```
-
-**FlowExpression** content represent an embedded JavaScript expression.
-
-#### `PhrasingExpressionContent`
-
-```idl
-type PhrasingExpressionContent = MDXTextExpression
-```
-
-**PhrasingExpression** content represent an embedded JavaScript expression.
 
 #### `PhrasingContent` (MDX expression)
 
 ```idl
-type PhrasingContentMdxExpression = PhrasingExpressionContent | PhrasingContent
-```
-
-#### `FlowContent` (MDX expression)
-
-```idl
-type FlowContentMdxExpression = FlowExpressionContent | FlowContent
+type PhrasingContentMdxExpression = MDXTextExpression | PhrasingContent
 ```
 
 ## Related
@@ -233,13 +214,13 @@ type FlowContentMdxExpression = FlowExpressionContent | FlowContent
 *   [`syntax-tree/mdast-util-to-markdown`][to-markdown]
     — mdast serializer to create markdown from mdast
 *   `syntax-tree/mdast-util-mdx`
-    — mdast utility to support all of MDX
+    — mdast utility to support MDX
 *   `syntax-tree/mdast-util-mdxjs`
-    — mdast utility to support all of MDX.js
+    — mdast utility to support MDX.js
 *   [`micromark/micromark`][micromark]
     — the smallest commonmark-compliant markdown parser that exists
 *   [`micromark/micromark-extension-mdx-expression`][extension]
-    — micromark extension to parse expressions
+    — micromark extension to parse MDX expressions
 
 ## Contribute
 
@@ -311,6 +292,6 @@ abide by its terms.
 
 [dfn-literal]: https://github.com/syntax-tree/mdast#literal
 
-[dfn-flow-expression-content]: #flowexpressioncontent
+[dfn-flow-content]: #flowcontent-mdx-expression
 
-[dfn-phrasing-expression-content]: #phrasingexpressioncontent
+[dfn-phrasing-content]: #phrasingcontent-mdx-expression
