@@ -16,9 +16,9 @@ When parsing (`from-markdown`), must be combined with
 This utility handles parsing and serializing.
 See [`micromark-extension-mdx-expression`][extension] for how the syntax works.
 
-You probably should use either `micromark-extension-mdx` with `mdast-util-mdx`
-or `micromark-extension-mdxjs` with `mdast-util-mdxjs` (which both include this
-package) to support all of MDX or MDX.js.
+You probably should use either [`micromark-extension-mdx`][mdx] or
+[`micromark-extension-mdxjs`][mdxjs] with [`mdast-util-mdx`][mdast-util-mdx]
+(which both include this package) to support all of MDX (or MDX.js).
 Or use it all through `remark-mdx` or `remark-mdxjs` (**[remark][]**).
 
 ## Install
@@ -213,10 +213,8 @@ type PhrasingContentMdxExpression = MDXTextExpression | PhrasingContent
     — mdast parser using `micromark` to create mdast from markdown
 *   [`syntax-tree/mdast-util-to-markdown`][to-markdown]
     — mdast serializer to create markdown from mdast
-*   `syntax-tree/mdast-util-mdx`
+*   [`syntax-tree/mdast-util-mdx`][mdast-util-mdx]
     — mdast utility to support MDX
-*   `syntax-tree/mdast-util-mdxjs`
-    — mdast utility to support MDX.js
 *   [`micromark/micromark`][micromark]
     — the smallest commonmark-compliant markdown parser that exists
 *   [`micromark/micromark-extension-mdx-expression`][extension]
@@ -287,6 +285,12 @@ abide by its terms.
 [micromark]: https://github.com/micromark/micromark
 
 [extension]: https://github.com/micromark/micromark-extension-mdxjs-esm
+
+[mdx]: https://github.com/micromark/micromark-extension-mdx
+
+[mdxjs]: https://github.com/micromark/micromark-extension-mdxjs
+
+[mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
 
 [estree]: https://github.com/estree/estree
 
