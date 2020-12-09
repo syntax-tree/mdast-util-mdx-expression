@@ -285,5 +285,23 @@ test('mdast -> markdown', function (t) {
     'should serialize text expressions'
   )
 
+  t.deepEqual(
+    toMarkdown(
+      {type: 'paragraph', children: [{type: 'text', value: 'a { b'}]},
+      {extensions: [mdxExpression.toMarkdown]}
+    ),
+    'a \\{ b\n',
+    'should escape `{` in text'
+  )
+
+  t.deepEqual(
+    toMarkdown(
+      {type: 'definition', url: 'x', title: 'a\n{\nb'},
+      {extensions: [mdxExpression.toMarkdown]}
+    ),
+    '[]: x "a\n\\{\nb"\n',
+    'should escape `{` at the start of a line'
+  )
+
   t.end()
 })

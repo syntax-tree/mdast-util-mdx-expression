@@ -3,6 +3,11 @@ exports.handlers = {
   mdxTextExpression: handleMdxExpression
 }
 
+exports.unsafe = [
+  {character: '{', inConstruct: ['phrasing']},
+  {atBreak: true, character: '{'}
+]
+
 var eol = /\r?\n|\r/g
 
 function handleMdxExpression(node) {
