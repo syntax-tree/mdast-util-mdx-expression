@@ -76,10 +76,19 @@ Now, running `node example` yields (positional info removed for brevity):
       value: '\na + 1\n',
       data: {
         estree: {
-          type: 'BinaryExpression',
-          left: {type: 'Identifier', name: 'a'},
-          operator: '+',
-          right: {type: 'Literal', value: 1}
+          type: 'Program',
+          body: [
+            {
+              type: 'ExpressionStatement',
+              expression: {
+                type: 'BinaryExpression',
+                left: {type: 'Identifier', name: 'a'},
+                operator: '+',
+                right: {type: 'Literal', value: 1, raw: '1'}
+              }
+            }
+          ],
+          sourceType: 'module'
         }
       }
     },
@@ -91,7 +100,16 @@ Now, running `node example` yields (positional info removed for brevity):
           type: 'mdxTextExpression',
           value: 'true',
           data: {
-            estree: {type: 'Literal', value: true}
+            estree: {
+              type: 'Program',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {type: 'Literal', value: true, raw: 'true'}
+                }
+              ],
+              sourceType: 'module'
+            }
           }
         },
         {type: 'text', value: '.'}
