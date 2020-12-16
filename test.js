@@ -228,11 +228,35 @@ test('markdown -> mdast', function (t) {
               value: 'a',
               data: {
                 estree: {
-                  type: 'Identifier',
-                  start: 0,
-                  end: 1,
-                  loc: {start: {line: 1, column: 0}, end: {line: 1, column: 1}},
-                  name: 'a'
+                  type: 'Program',
+                  start: 1,
+                  end: 2,
+                  body: [
+                    {
+                      type: 'ExpressionStatement',
+                      expression: {
+                        type: 'Identifier',
+                        start: 1,
+                        end: 2,
+                        name: 'a',
+                        loc: {
+                          start: {line: 1, column: 1},
+                          end: {line: 1, column: 2}
+                        },
+                        range: [1, 2]
+                      },
+                      start: 1,
+                      end: 2,
+                      loc: {
+                        start: {line: 1, column: 1},
+                        end: {line: 1, column: 2}
+                      },
+                      range: [1, 2]
+                    }
+                  ],
+                  sourceType: 'module',
+                  loc: {start: {line: 1, column: 1}, end: {line: 1, column: 2}},
+                  range: [1, 2]
                 }
               }
             },
