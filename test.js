@@ -205,8 +205,8 @@ test('markdown -> mdast', function (t) {
   )
 
   t.deepEqual(
+    // Cheap clone to remove non-JSON values.
     JSON.parse(
-      // Cheap clone to remove non-JSON values.
       JSON.stringify(
         removePosition(
           fromMarkdown('{a}.', {
@@ -255,6 +255,7 @@ test('markdown -> mdast', function (t) {
                     }
                   ],
                   sourceType: 'module',
+                  comments: [],
                   loc: {start: {line: 1, column: 1}, end: {line: 1, column: 2}},
                   range: [1, 2]
                 }
@@ -266,6 +267,130 @@ test('markdown -> mdast', function (t) {
       ]
     },
     'should add a `data.estree` if `addResult` was used in the syntax plugin'
+  )
+
+  t.deepEqual(
+    // Cheap clone to remove non-JSON values.
+    JSON.parse(
+      JSON.stringify(
+        removePosition(
+          fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
+            extensions: [syntax({acorn: acorn, addResult: true})],
+            mdastExtensions: [mdxExpression.fromMarkdown]
+          }),
+          true
+        )
+      )
+    ),
+    {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'A '},
+            {
+              type: 'mdxTextExpression',
+              value: '/*b*/ c // d\n',
+              data: {
+                estree: {
+                  type: 'Program',
+                  start: 3,
+                  end: 16,
+                  body: [
+                    {
+                      type: 'ExpressionStatement',
+                      expression: {
+                        type: 'Identifier',
+                        start: 9,
+                        end: 10,
+                        name: 'c',
+                        loc: {
+                          start: {line: 1, column: 9},
+                          end: {line: 1, column: 10}
+                        },
+                        range: [9, 10]
+                      },
+                      start: 3,
+                      end: 16,
+                      loc: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 16}
+                      },
+                      range: [3, 16]
+                    }
+                  ],
+                  sourceType: 'module',
+                  comments: [
+                    {
+                      type: 'Block',
+                      value: 'b',
+                      start: 3,
+                      end: 8,
+                      loc: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 8}
+                      },
+                      range: [3, 8]
+                    },
+                    {
+                      type: 'Line',
+                      value: ' d',
+                      start: 11,
+                      end: 15,
+                      loc: {
+                        start: {line: 1, column: 11},
+                        end: {line: 1, column: 15}
+                      },
+                      range: [11, 15]
+                    }
+                  ],
+                  loc: {
+                    start: {line: 1, column: 3},
+                    end: {line: 1, column: 16}
+                  },
+                  range: [3, 16]
+                }
+              }
+            },
+            {type: 'text', value: ' e '},
+            {
+              type: 'mdxTextExpression',
+              value: '/* f */',
+              data: {
+                estree: {
+                  type: 'Program',
+                  start: 21,
+                  end: 28,
+                  body: [],
+                  sourceType: 'module',
+                  comments: [
+                    {
+                      type: 'Block',
+                      value: ' f ',
+                      start: 21,
+                      end: 28,
+                      loc: {
+                        start: {line: 2, column: 5},
+                        end: {line: 2, column: 12}
+                      },
+                      range: [21, 28]
+                    }
+                  ],
+                  loc: {
+                    start: {line: 2, column: 5},
+                    end: {line: 2, column: 12}
+                  },
+                  range: [21, 28]
+                }
+              }
+            },
+            {type: 'text', value: '.'}
+          ]
+        }
+      ]
+    },
+    'should support comments in expressions'
   )
 
   t.end()
