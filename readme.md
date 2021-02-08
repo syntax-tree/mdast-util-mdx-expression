@@ -302,7 +302,7 @@ abide by its terms.
 
 [micromark]: https://github.com/micromark/micromark
 
-[extension]: https://github.com/micromark/micromark-extension-mdxjs-esm
+[extension]: https://github.com/micromark/micromark-extension-mdx-expression
 
 [mdx]: https://github.com/micromark/micromark-extension-mdx
 
