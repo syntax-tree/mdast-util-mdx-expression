@@ -23,6 +23,9 @@ Or use it all through [`remark-mdx`][remark-mdx] (**[remark][]**).
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -129,13 +132,9 @@ b {true}.
 
 ## API
 
-### `mdxExpression.fromMarkdown`
+### `mdxExpressionFromMarkdown`
 
-### `mdxExpression.toMarkdown`
-
-> Note: the separate extensions are also available at
-> `mdast-util-mdx-expression/from-markdown` and
-> `mdast-util-mdx-expression/to-markdown`.
+### `mdxExpressionToMarkdown`
 
 Support MDX (or MDX.js) expressions.
 The exports are extensions, respectively for

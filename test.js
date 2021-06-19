@@ -1,16 +1,16 @@
-var test = require('tape')
-var acorn = require('acorn')
-var fromMarkdown = require('mdast-util-from-markdown')
-var toMarkdown = require('mdast-util-to-markdown')
-var syntax = require('micromark-extension-mdx-expression')
-var removePosition = require('unist-util-remove-position')
-var mdxExpression = require('.')
+import test from 'tape'
+import * as acorn from 'acorn'
+import fromMarkdown from 'mdast-util-from-markdown'
+import toMarkdown from 'mdast-util-to-markdown'
+import {removePosition} from 'unist-util-remove-position'
+import mdxExpression from 'micromark-extension-mdx-expression'
+import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
 
 test('markdown -> mdast', function (t) {
   t.deepEqual(
     fromMarkdown('{1 + 1}', {
-      extensions: [syntax()],
-      mdastExtensions: [mdxExpression.fromMarkdown]
+      extensions: [mdxExpression()],
+      mdastExtensions: [mdxExpressionFromMarkdown]
     }),
     {
       type: 'root',
@@ -34,8 +34,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown('{\n  1 + 1\n}', {
-      extensions: [syntax()],
-      mdastExtensions: [mdxExpression.fromMarkdown]
+      extensions: [mdxExpression()],
+      mdastExtensions: [mdxExpressionFromMarkdown]
     }),
     {
       type: 'root',
@@ -60,8 +60,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('{\t \n}', {
-        extensions: [syntax()],
-        mdastExtensions: [mdxExpression.fromMarkdown]
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
     ),
@@ -72,8 +72,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('{ a { b } c }', {
-        extensions: [syntax()],
-        mdastExtensions: [mdxExpression.fromMarkdown]
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
     ),
@@ -87,8 +87,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('{ a /* { */ }', {
-        extensions: [syntax({acorn: acorn})],
-        mdastExtensions: [mdxExpression.fromMarkdown]
+        extensions: [mdxExpression({acorn})],
+        mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
     ),
@@ -101,8 +101,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown('a {1 + 1} b', {
-      extensions: [syntax()],
-      mdastExtensions: [mdxExpression.fromMarkdown]
+      extensions: [mdxExpression()],
+      mdastExtensions: [mdxExpressionFromMarkdown]
     }),
     {
       type: 'root',
@@ -152,8 +152,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('a {\t \n} c', {
-        extensions: [syntax()],
-        mdastExtensions: [mdxExpression.fromMarkdown]
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
     ).children[0],
@@ -171,8 +171,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('{ a { b } c }.', {
-        extensions: [syntax()],
-        mdastExtensions: [mdxExpression.fromMarkdown]
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
     ).children[0],
@@ -189,8 +189,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('{ a /* { */ }.', {
-        extensions: [syntax({acorn: acorn})],
-        mdastExtensions: [mdxExpression.fromMarkdown]
+        extensions: [mdxExpression({acorn})],
+        mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
     ).children[0],
@@ -210,8 +210,8 @@ test('markdown -> mdast', function (t) {
       JSON.stringify(
         removePosition(
           fromMarkdown('{a}.', {
-            extensions: [syntax({acorn: acorn, addResult: true})],
-            mdastExtensions: [mdxExpression.fromMarkdown]
+            extensions: [mdxExpression({acorn, addResult: true})],
+            mdastExtensions: [mdxExpressionFromMarkdown]
           }),
           true
         )
@@ -266,7 +266,7 @@ test('markdown -> mdast', function (t) {
         }
       ]
     },
-    'should add a `data.estree` if `addResult` was used in the syntax plugin'
+    'should add a `data.estree` if `addResult` was used in the syntax extension'
   )
 
   t.deepEqual(
@@ -275,8 +275,8 @@ test('markdown -> mdast', function (t) {
       JSON.stringify(
         removePosition(
           fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
-            extensions: [syntax({acorn: acorn, addResult: true})],
-            mdastExtensions: [mdxExpression.fromMarkdown]
+            extensions: [mdxExpression({acorn, addResult: true})],
+            mdastExtensions: [mdxExpressionFromMarkdown]
           }),
           true
         )
@@ -408,7 +408,7 @@ test('mdast -> markdown', function (t) {
           {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
         ]
       },
-      {extensions: [mdxExpression.toMarkdown]}
+      {extensions: [mdxExpressionToMarkdown]}
     ),
     '{a + b}\n\n{\n  c +\n  1\n}\n\n{}\n\nd\n',
     'should serialize flow expressions'
@@ -428,7 +428,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: '.'}
         ]
       },
-      {extensions: [mdxExpression.toMarkdown]}
+      {extensions: [mdxExpressionToMarkdown]}
     ),
     'a {b + c}, d {e + 1}, f {}.\n',
     'should serialize text expressions'
@@ -437,7 +437,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'paragraph', children: [{type: 'text', value: 'a { b'}]},
-      {extensions: [mdxExpression.toMarkdown]}
+      {extensions: [mdxExpressionToMarkdown]}
     ),
     'a \\{ b\n',
     'should escape `{` in text'
@@ -446,7 +446,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'definition', url: 'x', title: 'a\n{\nb'},
-      {extensions: [mdxExpression.toMarkdown]}
+      {extensions: [mdxExpressionToMarkdown]}
     ),
     '[]: x "a\n\\{\nb"\n',
     'should escape `{` at the start of a line'
