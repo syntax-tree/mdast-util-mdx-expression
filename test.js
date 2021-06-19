@@ -6,7 +6,7 @@ import {removePosition} from 'unist-util-remove-position'
 import mdxExpression from 'micromark-extension-mdx-expression'
 import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
 
-test('markdown -> mdast', function (t) {
+test('markdown -> mdast', (t) => {
   t.deepEqual(
     fromMarkdown('{1 + 1}', {
       extensions: [mdxExpression()],
@@ -396,7 +396,7 @@ test('markdown -> mdast', function (t) {
   t.end()
 })
 
-test('mdast -> markdown', function (t) {
+test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {

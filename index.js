@@ -1,6 +1,6 @@
 import stripIndent from 'strip-indent'
 
-var eol = /\r?\n|\r/g
+const eol = /\r?\n|\r/g
 
 export const mdxExpressionFromMarkdown = {
   enter: {
@@ -37,8 +37,8 @@ function enterMdxTextExpression(token) {
 }
 
 function exitMdxExpression(token) {
-  var value = this.resume()
-  var node = this.exit(token)
+  const value = this.resume()
+  const node = this.exit(token)
 
   node.value = token.type === 'mdxFlowExpression' ? dedent(value) : value
 
@@ -52,9 +52,14 @@ function exitMdxExpressionData(token) {
   this.config.exit.data.call(this, token)
 }
 
+function handleMdxExpression(node) {
+  const value = node.value || ''
+  return '{' + (node.type === 'mdxFlowExpression' ? indent(value) : value) + '}'
+}
+
 function dedent(value) {
-  var firstLineEnding = /\r?\n|\r/.exec(value)
-  var position = firstLineEnding
+  const firstLineEnding = /\r?\n|\r/.exec(value)
+  const position = firstLineEnding
     ? firstLineEnding.index + firstLineEnding[0].length
     : -1
 
@@ -65,16 +70,11 @@ function dedent(value) {
   return value
 }
 
-function handleMdxExpression(node) {
-  var value = node.value || ''
-  return '{' + (node.type === 'mdxFlowExpression' ? indent(value) : value) + '}'
-}
-
 function indent(value) {
-  var result = []
-  var start = 0
-  var line = 0
-  var match
+  const result = []
+  let start = 0
+  let line = 0
+  let match
 
   while ((match = eol.exec(value))) {
     one(value.slice(start, match.index))
