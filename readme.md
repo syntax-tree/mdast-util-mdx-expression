@@ -16,10 +16,10 @@ When parsing (`from-markdown`), must be combined with
 This utility handles parsing and serializing.
 See [`micromark-extension-mdx-expression`][extension] for how the syntax works.
 
-You probably should use either [`micromark-extension-mdx`][mdx] or
-[`micromark-extension-mdxjs`][mdxjs] with [`mdast-util-mdx`][mdast-util-mdx]
-(which both include this package) to support all of MDX (or MDX.js).
-Or use it all through [`remark-mdx`][remark-mdx] (**[remark][]**).
+## When to use this
+
+Use [`mdast-util-mdx`][mdast-util-mdx] if you want all of MDX / MDX.js.
+Use this otherwise.
 
 ## Install
 
@@ -44,26 +44,26 @@ Say we have an MDX.js file, `example.mdx`:
 b {true}.
 ```
 
-And our script, `example.js`, looks as follows:
+And our module, `example.js`, looks as follows:
 
 ```js
-var fs = require('fs')
-var acorn = require('acorn')
-var syntax = require('micromark-extension-mdx-expression')
-var fromMarkdown = require('mdast-util-from-markdown')
-var toMarkdown = require('mdast-util-to-markdown')
-var mdxExpression = require('mdast-util-mdx-expression')
+import fs from 'node:fs'
+import * as acorn from 'acorn'
+import {fromMarkdown} from 'mdast-util-from-markdown'
+import {toMarkdown} from 'mdast-util-to-markdown'
+import {mdxExpression} from 'micromark-extension-mdx-expression'
+import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from 'mdast-util-mdx-expression'
 
 var doc = fs.readFileSync('example.mdx')
 
 var tree = fromMarkdown(doc, {
-  extensions: [syntax({acorn: acorn, addResult: true})],
-  mdastExtensions: [mdxExpression.fromMarkdown]
+  extensions: [mdxExpression({acorn, addResult: true})],
+  mdastExtensions: [mdxExpressionFromMarkdown]
 })
 
 console.log(tree)
 
-var out = toMarkdown(tree, {extensions: [mdxExpression.toMarkdown]})
+var out = toMarkdown(tree, {extensions: [mdxExpressionToMarkdown]})
 
 console.log(out)
 ```
@@ -303,10 +303,6 @@ abide by its terms.
 
 [extension]: https://github.com/micromark/micromark-extension-mdx-expression
 
-[mdx]: https://github.com/micromark/micromark-extension-mdx
-
-[mdxjs]: https://github.com/micromark/micromark-extension-mdxjs
-
 [mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
 
 [estree]: https://github.com/estree/estree
@@ -316,5 +312,3 @@ abide by its terms.
 [dfn-flow-content]: #flowcontent-mdx-expression
 
 [dfn-phrasing-content]: #phrasingcontent-mdx-expression
-
-[remark-mdx]: https://github.com/mdx-js/mdx/tree/next/packages/remark-mdx
