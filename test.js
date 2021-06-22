@@ -1,9 +1,9 @@
 import test from 'tape'
 import * as acorn from 'acorn'
-import fromMarkdown from 'mdast-util-from-markdown'
-import toMarkdown from 'mdast-util-to-markdown'
+import {fromMarkdown} from 'mdast-util-from-markdown'
+import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
-import mdxExpression from 'micromark-extension-mdx-expression'
+import {mdxExpression} from 'micromark-extension-mdx-expression'
 import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
 
 test('markdown -> mdast', (t) => {
@@ -156,13 +156,18 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'paragraph',
+      type: 'root',
       children: [
-        {type: 'text', value: 'a '},
-        {type: 'mdxTextExpression', value: '\t \n'},
-        {type: 'text', value: ' c'}
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a '},
+            {type: 'mdxTextExpression', value: '\t \n'},
+            {type: 'text', value: ' c'}
+          ]
+        }
       ]
     },
     'should support an empty text expression (agnostic)'
@@ -175,12 +180,17 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'paragraph',
+      type: 'root',
       children: [
-        {type: 'mdxTextExpression', value: ' a { b } c '},
-        {type: 'text', value: '.'}
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'mdxTextExpression', value: ' a { b } c '},
+            {type: 'text', value: '.'}
+          ]
+        }
       ]
     },
     'should support an balanced braces in a flow expression (agnostic)'
@@ -193,12 +203,17 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [mdxExpressionFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'paragraph',
+      type: 'root',
       children: [
-        {type: 'mdxTextExpression', value: ' a /* { */ '},
-        {type: 'text', value: '.'}
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'mdxTextExpression', value: ' a /* { */ '},
+            {type: 'text', value: '.'}
+          ]
+        }
       ]
     },
     'should support a commented-out unbalanced brace in a flow expression (gnostic)'
