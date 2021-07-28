@@ -419,6 +419,7 @@ test('mdast -> markdown', (t) => {
         children: [
           {type: 'mdxFlowExpression', value: 'a + b'},
           {type: 'mdxFlowExpression', value: '\nc +\n1\n'},
+          // @ts-expect-error: `value` missing.
           {type: 'mdxFlowExpression'},
           {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
         ]
@@ -439,6 +440,7 @@ test('mdast -> markdown', (t) => {
           {type: 'text', value: ', d '},
           {type: 'mdxTextExpression', value: 'e + 1'},
           {type: 'text', value: ', f '},
+          // @ts-expect-error: `value` missing.
           {type: 'mdxTextExpression'},
           {type: 'text', value: '.'}
         ]
@@ -460,10 +462,10 @@ test('mdast -> markdown', (t) => {
 
   t.deepEqual(
     toMarkdown(
-      {type: 'definition', url: 'x', title: 'a\n{\nb'},
+      {type: 'definition', identifier: 'a', url: 'x', title: 'a\n{\nb'},
       {extensions: [mdxExpressionToMarkdown]}
     ),
-    '[]: x "a\n\\{\nb"\n',
+    '[a]: x "a\n\\{\nb"\n',
     'should escape `{` at the start of a line'
   )
 

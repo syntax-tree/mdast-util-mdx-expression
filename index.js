@@ -1,13 +1,11 @@
 /**
- * @typedef {import('mdast').Literal} Literal
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
  * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
- * @typedef {import('estree-jsx').Program} Estree
- *
- * @typedef {Literal & {type: 'mdxFlowExpression', data: {estree?: Estree}}} MDXFlowExpression
- * @typedef {Literal & {type: 'mdxSpanExpression', data: {estree?: Estree}}} MDXSpanExpression
+ * @typedef {import('estree-jsx').Program} Program
+ * @typedef {import('./complex-types').MDXFlowExpression} MDXFlowExpression
+ * @typedef {import('./complex-types').MDXTextExpression} MDXTextExpression
  */
 
 import stripIndent from 'strip-indent'
@@ -42,14 +40,12 @@ export const mdxExpressionToMarkdown = {
 
 /** @type {FromMarkdownHandle} */
 function enterMdxFlowExpression(token) {
-  // @ts-expect-error: fine.
   this.enter({type: 'mdxFlowExpression', value: ''}, token)
   this.buffer()
 }
 
 /** @type {FromMarkdownHandle} */
 function enterMdxTextExpression(token) {
-  // @ts-expect-error: fine.
   this.enter({type: 'mdxTextExpression', value: ''}, token)
   this.buffer()
 }
@@ -57,14 +53,16 @@ function enterMdxTextExpression(token) {
 /** @type {FromMarkdownHandle} */
 function exitMdxExpression(token) {
   const value = this.resume()
-  const node = this.exit(token)
-
+  /** @type {Program|undefined} */
+  // @ts-expect-error: estree.
+  const estree = token.estree
+  const node = /** @type {MDXFlowExpression|MDXTextExpression} */ (
+    this.exit(token)
+  )
   node.value = token.type === 'mdxFlowExpression' ? dedent(value) : value
 
-  // @ts-expect-error: estree.
-  if (token.estree) {
-    // @ts-expect-error: estree.
-    node.data = {estree: token.estree}
+  if (estree) {
+    node.data = {estree}
   }
 }
 
@@ -76,7 +74,7 @@ function exitMdxExpressionData(token) {
 
 /**
  * @type {ToMarkdownHandle}
- * @param {MDXFlowExpression|MDXSpanExpression} node
+ * @param {MDXFlowExpression|MDXTextExpression} node
  */
 function handleMdxExpression(node) {
   const value = node.value || ''
