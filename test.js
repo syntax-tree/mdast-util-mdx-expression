@@ -471,3 +471,43 @@ test('mdast -> markdown', (t) => {
 
   t.end()
 })
+
+test('markdown -> mdast -> markdown', (t) => {
+  t.deepEqual(
+    toMarkdown(
+      fromMarkdown('  {`\n a\n `}', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      }),
+      {extensions: [mdxExpressionToMarkdown]}
+    ),
+    '{`\na\n`}\n',
+    'should strip superfluous whitespace as much as the opening prefix, or less, when roundtripping expressions (flow)'
+  )
+
+  t.deepEqual(
+    toMarkdown(
+      fromMarkdown('  {`\n    a\n  `}', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      }),
+      {extensions: [mdxExpressionToMarkdown]}
+    ),
+    '{`\n  a\n`}\n',
+    'should strip superfluous whitespace (but not more) when roundtripping expressions (flow)'
+  )
+
+  t.deepEqual(
+    toMarkdown(
+      fromMarkdown('a {`\n    b\n  `} c', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      }),
+      {extensions: [mdxExpressionToMarkdown]}
+    ),
+    'a {`\n    b\n  `} c\n',
+    'should not strip consecutive lines in expressions (text)'
+  )
+
+  t.end()
+})
