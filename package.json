@@ -36,8 +36,7 @@
     "index.js"
   ],
   "dependencies": {
-    "@types/estree-jsx": "^0.0.1",
-    "strip-indent": "^4.0.0"
+    "@types/estree-jsx": "^0.0.1"
   },
   "devDependencies": {
     "@types/acorn": "^4.0.0",

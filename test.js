@@ -42,7 +42,7 @@ test('markdown -> mdast', (t) => {
       children: [
         {
           type: 'mdxFlowExpression',
-          value: '\n1 + 1\n',
+          value: '\n  1 + 1\n',
           position: {
             start: {line: 1, column: 1, offset: 0},
             end: {line: 3, column: 2, offset: 11}
@@ -426,7 +426,7 @@ test('mdast -> markdown', (t) => {
       },
       {extensions: [mdxExpressionToMarkdown]}
     ),
-    '{a + b}\n\n{\n  c +\n  1\n}\n\n{}\n\nd\n',
+    '{a + b}\n\n{\nc +\n1\n}\n\n{}\n\nd\n',
     'should serialize flow expressions'
   )
 

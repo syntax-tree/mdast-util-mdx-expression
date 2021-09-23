@@ -8,10 +8,6 @@
  * @typedef {import('./complex-types').MDXTextExpression} MDXTextExpression
  */
 
-import stripIndent from 'strip-indent'
-
-const eol = /\r?\n|\r/g
-
 /** @type {FromMarkdownExtension} */
 export const mdxExpressionFromMarkdown = {
   enter: {
@@ -59,7 +55,7 @@ function exitMdxExpression(token) {
   const node = /** @type {MDXFlowExpression|MDXTextExpression} */ (
     this.exit(token)
   )
-  node.value = token.type === 'mdxFlowExpression' ? dedent(value) : value
+  node.value = value
 
   if (estree) {
     node.data = {estree}
@@ -78,54 +74,5 @@ function exitMdxExpressionData(token) {
  */
 function handleMdxExpression(node) {
   const value = node.value || ''
-  return '{' + (node.type === 'mdxFlowExpression' ? indent(value) : value) + '}'
-}
-
-/**
- * @param {string} value
- * @returns {string}
- */
-function dedent(value) {
-  const firstLineEnding = /\r?\n|\r/.exec(value)
-  const position = firstLineEnding
-    ? firstLineEnding.index + firstLineEnding[0].length
-    : -1
-
-  if (position > -1) {
-    return value.slice(0, position) + stripIndent(value.slice(position))
-  }
-
-  return value
-}
-
-/**
- * @param {string} value
- * @returns {string}
- */
-function indent(value) {
-  /** @type {Array.<string>} */
-  const result = []
-  let start = 0
-  let line = 0
-  /** @type {RegExpExecArray|null} */
-  let match
-
-  while ((match = eol.exec(value))) {
-    one(value.slice(start, match.index))
-    result.push(match[0])
-    start = match.index + match[0].length
-    line++
-  }
-
-  one(value.slice(start))
-
-  return result.join('')
-
-  /**
-   * @param {string} slice
-   * @returns {void}
-   */
-  function one(slice) {
-    result.push((line && slice ? '  ' : '') + slice)
-  }
+  return '{' + value + '}'
 }
