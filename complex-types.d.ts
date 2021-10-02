@@ -1,14 +1,14 @@
 import {Literal} from 'mdast'
 import {Program} from 'estree-jsx'
 
-export interface MDXFlowExpression extends Literal {
+export interface MdxFlowExpression extends Literal {
   type: 'mdxFlowExpression'
   data?: {
     estree?: Program
   } & Literal['data']
 }
 
-export interface MDXTextExpression extends Literal {
+export interface MdxTextExpression extends Literal {
   type: 'mdxTextExpression'
   data?: {
     estree?: Program
@@ -17,10 +17,10 @@ export interface MDXTextExpression extends Literal {
 
 declare module 'mdast' {
   interface StaticPhrasingContentMap {
-    mdxTextExpression: MDXTextExpression
+    mdxTextExpression: MdxTextExpression
   }
 
   interface BlockContentMap {
-    mdxFlowExpression: MDXFlowExpression
+    mdxFlowExpression: MdxFlowExpression
   }
 }

@@ -4,8 +4,13 @@
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
  * @typedef {import('estree-jsx').Program} Program
- * @typedef {import('./complex-types').MDXFlowExpression} MDXFlowExpression
- * @typedef {import('./complex-types').MDXTextExpression} MDXTextExpression
+ * @typedef {import('./complex-types').MdxFlowExpression} MdxFlowExpression
+ * @typedef {import('./complex-types').MdxTextExpression} MdxTextExpression
+ */
+
+/**
+ * @typedef {MdxFlowExpression} MDXFlowExpression
+ * @typedef {MdxTextExpression} MDXTextExpression
  */
 
 /** @type {FromMarkdownExtension} */
