@@ -24,3 +24,15 @@ declare module 'mdast' {
     mdxFlowExpression: MdxFlowExpression
   }
 }
+
+declare module 'hast' {
+  interface RootContentMap {
+    mdxTextExpression: MdxTextExpression
+    mdxFlowExpression: MdxFlowExpression
+  }
+
+  interface ElementContentMap {
+    mdxFlowExpression: MdxFlowExpression
+    mdxFlowExpression: MdxFlowExpression
+  }
+}
