@@ -255,23 +255,26 @@ test('markdown -> mdast', (t) => {
                         end: 2,
                         name: 'a',
                         loc: {
-                          start: {line: 1, column: 1},
-                          end: {line: 1, column: 2}
+                          start: {line: 1, column: 1, offset: 1},
+                          end: {line: 1, column: 2, offset: 2}
                         },
                         range: [1, 2]
                       },
                       start: 1,
                       end: 2,
                       loc: {
-                        start: {line: 1, column: 1},
-                        end: {line: 1, column: 2}
+                        start: {line: 1, column: 1, offset: 1},
+                        end: {line: 1, column: 2, offset: 2}
                       },
                       range: [1, 2]
                     }
                   ],
                   sourceType: 'module',
                   comments: [],
-                  loc: {start: {line: 1, column: 1}, end: {line: 1, column: 2}},
+                  loc: {
+                    start: {line: 1, column: 1, offset: 1},
+                    end: {line: 1, column: 2, offset: 2}
+                  },
                   range: [1, 2]
                 }
               }
@@ -321,16 +324,16 @@ test('markdown -> mdast', (t) => {
                         end: 10,
                         name: 'c',
                         loc: {
-                          start: {line: 1, column: 9},
-                          end: {line: 1, column: 10}
+                          start: {line: 1, column: 9, offset: 9},
+                          end: {line: 1, column: 10, offset: 10}
                         },
                         range: [9, 10]
                       },
                       start: 3,
                       end: 16,
                       loc: {
-                        start: {line: 1, column: 3},
-                        end: {line: 1, column: 16}
+                        start: {line: 1, column: 3, offset: 3},
+                        end: {line: 2, column: 0, offset: 16}
                       },
                       range: [3, 16]
                     }
@@ -343,8 +346,8 @@ test('markdown -> mdast', (t) => {
                       start: 3,
                       end: 8,
                       loc: {
-                        start: {line: 1, column: 3},
-                        end: {line: 1, column: 8}
+                        start: {line: 1, column: 3, offset: 3},
+                        end: {line: 1, column: 8, offset: 8}
                       },
                       range: [3, 8]
                     },
@@ -354,15 +357,15 @@ test('markdown -> mdast', (t) => {
                       start: 11,
                       end: 15,
                       loc: {
-                        start: {line: 1, column: 11},
-                        end: {line: 1, column: 15}
+                        start: {line: 1, column: 11, offset: 11},
+                        end: {line: 1, column: 15, offset: 15}
                       },
                       range: [11, 15]
                     }
                   ],
                   loc: {
-                    start: {line: 1, column: 3},
-                    end: {line: 1, column: 16}
+                    start: {line: 1, column: 3, offset: 3},
+                    end: {line: 2, column: 0, offset: 16}
                   },
                   range: [3, 16]
                 }
@@ -386,15 +389,15 @@ test('markdown -> mdast', (t) => {
                       start: 21,
                       end: 28,
                       loc: {
-                        start: {line: 2, column: 5},
-                        end: {line: 2, column: 12}
+                        start: {line: 2, column: 5, offset: 21},
+                        end: {line: 2, column: 12, offset: 28}
                       },
                       range: [21, 28]
                     }
                   ],
                   loc: {
-                    start: {line: 2, column: 5},
-                    end: {line: 2, column: 12}
+                    start: {line: 2, column: 5, offset: 21},
+                    end: {line: 2, column: 12, offset: 28}
                   },
                   range: [21, 28]
                 }
