@@ -32,7 +32,7 @@ declare module 'hast' {
   }
 
   interface ElementContentMap {
-    mdxFlowExpression: MdxFlowExpression
+    mdxTextExpression: MdxTextExpression
     mdxFlowExpression: MdxFlowExpression
   }
 }
