@@ -1,6 +1,7 @@
-import {Literal} from 'mdast'
-import {Program} from 'estree-jsx'
+import type {Literal} from 'mdast'
+import type {Program} from 'estree-jsx'
 
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 export interface MdxFlowExpression extends Literal {
   type: 'mdxFlowExpression'
   data?: {
@@ -36,3 +37,4 @@ declare module 'hast' {
     mdxFlowExpression: MdxFlowExpression
   }
 }
+/* eslint-enable @typescript-eslint/consistent-type-definitions */
