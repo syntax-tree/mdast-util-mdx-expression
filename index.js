@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
  * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
@@ -39,19 +40,28 @@ export const mdxExpressionToMarkdown = {
   ]
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterMdxFlowExpression(token) {
   this.enter({type: 'mdxFlowExpression', value: ''}, token)
   this.buffer()
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterMdxTextExpression(token) {
   this.enter({type: 'mdxTextExpression', value: ''}, token)
   this.buffer()
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitMdxExpression(token) {
   const value = this.resume()
   /** @type {Program|undefined} */
@@ -67,7 +77,10 @@ function exitMdxExpression(token) {
   }
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitMdxExpressionData(token) {
   this.config.enter.data.call(this, token)
   this.config.exit.data.call(this, token)
