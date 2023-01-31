@@ -6,6 +6,15 @@ import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
 import {mdxExpression} from 'micromark-extension-mdx-expression'
 import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
+import * as mod from './index.js'
+
+test('core', () => {
+  assert.deepEqual(
+    Object.keys(mod).sort(),
+    ['mdxExpressionFromMarkdown', 'mdxExpressionToMarkdown'],
+    'should expose the public api'
+  )
+})
 
 test('mdxExpressionFromMarkdown', () => {
   assert.deepEqual(
