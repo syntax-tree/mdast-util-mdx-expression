@@ -1,5 +1,6 @@
-import type {Literal} from 'mdast'
 import type {Program} from 'estree-jsx'
+import type {Literal as HastLiteral} from 'hast'
+import type {Literal as MdastLiteral} from 'mdast'
 
 export {
   mdxExpressionFromMarkdown,
@@ -10,7 +11,7 @@ export {
  * MDX expression node, occurring in flow (block).
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface MdxFlowExpression extends Literal {
+export interface MdxFlowExpression extends MdastLiteral {
   /**
    * Node type.
    */
@@ -25,14 +26,14 @@ export interface MdxFlowExpression extends Literal {
      */
     // eslint-disable-next-line @typescript-eslint/ban-types
     estree?: Program | null | undefined
-  } & Literal['data']
+  } & MdastLiteral['data']
 }
 
 /**
  * MDX expression node, occurring in text (phrasing).
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface MdxTextExpression extends Literal {
+export interface MdxTextExpression extends MdastLiteral {
   /**
    * Node type.
    */
@@ -47,7 +48,7 @@ export interface MdxTextExpression extends Literal {
      */
     // eslint-disable-next-line @typescript-eslint/ban-types
     estree?: Program | null | undefined
-  } & Literal['data']
+  } & MdastLiteral['data']
 }
 
 /**
@@ -61,6 +62,50 @@ export type MDXFlowExpression = MdxFlowExpression
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type MDXTextExpression = MdxTextExpression
+
+/**
+ * MDX expression node, occurring in flow (block), for hast.
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface MdxFlowExpressionHast extends HastLiteral {
+  /**
+   * Node type.
+   */
+  type: 'mdxFlowExpression'
+
+  /**
+   * Data.
+   */
+  data?: {
+    /**
+     * Program node from estree.
+     */
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    estree?: Program | null | undefined
+  } & HastLiteral['data']
+}
+
+/**
+ * MDX expression node, occurring in text (phrasing), for hast.
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface MdxTextExpressionHast extends HastLiteral {
+  /**
+   * Node type.
+   */
+  type: 'mdxTextExpression'
+
+  /**
+   * Data.
+   */
+  data?: {
+    /**
+     * Program node from estree.
+     */
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    estree?: Program | null | undefined
+  } & HastLiteral['data']
+}
 
 // Add nodes to mdast content.
 declare module 'mdast' {
@@ -81,17 +126,18 @@ declare module 'mdast' {
   }
 }
 
+// Add nodes to hast content.
 declare module 'hast' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface RootContentMap {
     /**
      * MDX expression node, occurring in flow (block).
      */
-    mdxFlowExpression: MdxFlowExpression
+    mdxFlowExpression: MdxFlowExpressionHast
     /**
      * MDX expression node, occurring in text (phrasing).
      */
-    mdxTextExpression: MdxTextExpression
+    mdxTextExpression: MdxTextExpressionHast
   }
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -99,10 +145,10 @@ declare module 'hast' {
     /**
      * MDX expression node, occurring in flow (block).
      */
-    mdxFlowExpression: MdxFlowExpression
+    mdxFlowExpression: MdxFlowExpressionHast
     /**
      * MDX expression node, occurring in text (phrasing).
      */
-    mdxTextExpression: MdxTextExpression
+    mdxTextExpression: MdxTextExpressionHast
   }
 }
