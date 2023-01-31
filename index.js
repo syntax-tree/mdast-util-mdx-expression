@@ -1,15 +1,4 @@
-/**
- * @typedef {import('./complex-types.js').MdxFlowExpression} MdxFlowExpression
- * @typedef {import('./complex-types.js').MdxTextExpression} MdxTextExpression
- */
-
-/**
- * @typedef {MdxFlowExpression} MDXFlowExpression
- *   Deprecated: use `MdxFlowExpression`.
- * @typedef {MdxTextExpression} MDXTextExpression
- *   Deprecated: use `MdxFlowExpression`.
- */
-
+// Note: types exposed from `index.d.ts`.
 export {
   mdxExpressionFromMarkdown,
   mdxExpressionToMarkdown
