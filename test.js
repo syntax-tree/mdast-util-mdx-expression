@@ -1,4 +1,5 @@
-import test from 'tape'
+import assert from 'node:assert/strict'
+import test from 'node:test'
 import * as acorn from 'acorn'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
@@ -6,8 +7,8 @@ import {removePosition} from 'unist-util-remove-position'
 import {mdxExpression} from 'micromark-extension-mdx-expression'
 import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
 
-test('markdown -> mdast', (t) => {
-  t.deepEqual(
+test('mdxExpressionFromMarkdown', () => {
+  assert.deepEqual(
     fromMarkdown('{1 + 1}', {
       extensions: [mdxExpression()],
       mdastExtensions: [mdxExpressionFromMarkdown]
@@ -32,7 +33,7 @@ test('markdown -> mdast', (t) => {
     'should support a flow expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown('{\n  1 + 1\n}', {
       extensions: [mdxExpression()],
       mdastExtensions: [mdxExpressionFromMarkdown]
@@ -57,7 +58,7 @@ test('markdown -> mdast', (t) => {
     'should support a flow expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('{\t \n}', {
         extensions: [mdxExpression()],
@@ -69,7 +70,7 @@ test('markdown -> mdast', (t) => {
     'should support an empty flow expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('{ a { b } c }', {
         extensions: [mdxExpression()],
@@ -84,7 +85,7 @@ test('markdown -> mdast', (t) => {
     'should support an balanced braces in a flow expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('{ a /* { */ }', {
         extensions: [mdxExpression({acorn})],
@@ -99,7 +100,7 @@ test('markdown -> mdast', (t) => {
     'should support a commented-out unbalanced brace in a flow expression (gnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown('a {1 + 1} b', {
       extensions: [mdxExpression()],
       mdastExtensions: [mdxExpressionFromMarkdown]
@@ -149,7 +150,7 @@ test('markdown -> mdast', (t) => {
     'should support a text expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('a {\t \n} c', {
         extensions: [mdxExpression()],
@@ -173,7 +174,7 @@ test('markdown -> mdast', (t) => {
     'should support an empty text expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('{ a { b } c }.', {
         extensions: [mdxExpression()],
@@ -196,7 +197,7 @@ test('markdown -> mdast', (t) => {
     'should support an balanced braces in a flow expression (agnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('{ a /* { */ }.', {
         extensions: [mdxExpression({acorn})],
@@ -219,7 +220,7 @@ test('markdown -> mdast', (t) => {
     'should support a commented-out unbalanced brace in a flow expression (gnostic)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // Cheap clone to remove non-JSON values.
     JSON.parse(
       JSON.stringify(
@@ -287,7 +288,7 @@ test('markdown -> mdast', (t) => {
     'should add a `data.estree` if `addResult` was used in the syntax extension'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // Cheap clone to remove non-JSON values.
     JSON.parse(
       JSON.stringify(
@@ -410,12 +411,10 @@ test('markdown -> mdast', (t) => {
     },
     'should support comments in expressions'
   )
-
-  t.end()
 })
 
-test('mdast -> markdown', (t) => {
-  t.deepEqual(
+test('mdxExpressionToMarkdown', () => {
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'root',
@@ -433,7 +432,7 @@ test('mdast -> markdown', (t) => {
     'should serialize flow expressions'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -454,7 +453,7 @@ test('mdast -> markdown', (t) => {
     'should serialize text expressions'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'paragraph', children: [{type: 'text', value: 'a { b'}]},
       {extensions: [mdxExpressionToMarkdown]}
@@ -463,7 +462,7 @@ test('mdast -> markdown', (t) => {
     'should escape `{` in text'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'definition', identifier: 'a', url: 'x', title: 'a\n{\nb'},
       {extensions: [mdxExpressionToMarkdown]}
@@ -471,12 +470,10 @@ test('mdast -> markdown', (t) => {
     '[a]: x "a\n\\{\nb"\n',
     'should escape `{` at the start of a line'
   )
-
-  t.end()
 })
 
-test('markdown -> mdast -> markdown', (t) => {
-  t.deepEqual(
+test('roundtrip', () => {
+  assert.deepEqual(
     toMarkdown(
       fromMarkdown('  {`\n a\n `}', {
         extensions: [mdxExpression()],
@@ -488,7 +485,7 @@ test('markdown -> mdast -> markdown', (t) => {
     'should strip superfluous whitespace as much as the opening prefix, or less, when roundtripping expressions (flow)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       fromMarkdown('  {`\n    a\n  `}', {
         extensions: [mdxExpression()],
@@ -500,7 +497,7 @@ test('markdown -> mdast -> markdown', (t) => {
     'should strip superfluous whitespace (but not more) when roundtripping expressions (flow)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       fromMarkdown('a {`\n    b\n  `} c', {
         extensions: [mdxExpression()],
@@ -511,6 +508,4 @@ test('markdown -> mdast -> markdown', (t) => {
     'a {`\n    b\n  `} c\n',
     'should not strip consecutive lines in expressions (text)'
   )
-
-  t.end()
 })
