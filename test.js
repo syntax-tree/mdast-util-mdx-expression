@@ -490,8 +490,8 @@ test('roundtrip', () => {
       }),
       {extensions: [mdxExpressionToMarkdown]}
     ),
-    '{`\na\n`}\n',
-    'should strip superfluous whitespace as much as the opening prefix, or less, when roundtripping expressions (flow)'
+    '{`\n a\n `}\n',
+    'should *not* strip superfluous whitespace depending on the opening prefix, when roundtripping expressions (flow)'
   )
 
   assert.deepEqual(
@@ -502,8 +502,8 @@ test('roundtrip', () => {
       }),
       {extensions: [mdxExpressionToMarkdown]}
     ),
-    '{`\n  a\n`}\n',
-    'should strip superfluous whitespace (but not more) when roundtripping expressions (flow)'
+    '{`\n    a\n  `}\n',
+    'should *not* strip superfluous whitespace (if there is more) when roundtripping expressions (flow)'
   )
 
   assert.deepEqual(
