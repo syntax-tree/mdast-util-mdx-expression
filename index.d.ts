@@ -1,6 +1,6 @@
 import type {Program} from 'estree-jsx'
-import type {Literal as HastLiteral} from 'hast'
-import type {Literal as MdastLiteral} from 'mdast'
+import type {Data as HastData, Literal as HastLiteral} from 'hast'
+import type {Data as MdastData, Literal as MdastLiteral} from 'mdast'
 
 export {
   mdxExpressionFromMarkdown,
@@ -17,14 +17,19 @@ export interface MdxFlowExpression extends MdastLiteral {
   type: 'mdxFlowExpression'
 
   /**
-   * Data.
+   * Data associated with the mdast MDX expression (flow).
    */
-  data?: {
-    /**
-     * Program node from estree.
-     */
-    estree?: Program | null | undefined
-  } & MdastLiteral['data']
+  data?: MdxFlowExpressionData | undefined
+}
+
+/**
+ * Info associated with mdast MDX expression (flow) nodes by the ecosystem.
+ */
+export interface MdxFlowExpressionData extends MdastData {
+  /**
+   * Program node from estree.
+   */
+  estree?: Program | null | undefined
 }
 
 /**
@@ -37,14 +42,19 @@ export interface MdxTextExpression extends MdastLiteral {
   type: 'mdxTextExpression'
 
   /**
-   * Data.
+   * Data associated with the mdast MDX expression (text).
    */
-  data?: {
-    /**
-     * Program node from estree.
-     */
-    estree?: Program | null | undefined
-  } & MdastLiteral['data']
+  data?: MdxTextExpressionData | undefined
+}
+
+/**
+ * Info associated with mdast MDX expression (text) nodes by the ecosystem.
+ */
+export interface MdxTextExpressionData extends MdastData {
+  /**
+   * Program node from estree.
+   */
+  estree?: Program | null | undefined
 }
 
 /**
@@ -57,14 +67,19 @@ export interface MdxFlowExpressionHast extends HastLiteral {
   type: 'mdxFlowExpression'
 
   /**
-   * Data.
+   * Data associated with the hast MDX expression (flow).
    */
-  data?: {
-    /**
-     * Program node from estree.
-     */
-    estree?: Program | null | undefined
-  } & HastLiteral['data']
+  data?: MdxFlowExpressionHastData | undefined
+}
+
+/**
+ * Info associated with hast MDX expression (flow) nodes by the ecosystem.
+ */
+export interface MdxFlowExpressionHastData extends HastData {
+  /**
+   * Program node from estree.
+   */
+  estree?: Program | null | undefined
 }
 
 /**
@@ -77,14 +92,19 @@ export interface MdxTextExpressionHast extends HastLiteral {
   type: 'mdxTextExpression'
 
   /**
-   * Data.
+   * Data associated with the hast MDX expression (text).
    */
-  data?: {
-    /**
-     * Program node from estree.
-     */
-    estree?: Program | null | undefined
-  } & HastLiteral['data']
+  data?: MdxTextExpressionHastData | undefined
+}
+
+/**
+ * Info associated with hast MDX expression (text) nodes by the ecosystem.
+ */
+export interface MdxTextExpressionHastData extends HastData {
+  /**
+   * Program node from estree.
+   */
+  estree?: Program | null | undefined
 }
 
 // Add nodes to mdast content.
