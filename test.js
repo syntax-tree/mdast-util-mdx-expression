@@ -3,16 +3,19 @@ import test from 'node:test'
 import * as acorn from 'acorn'
 import {mdxExpression} from 'micromark-extension-mdx-expression'
 import {fromMarkdown} from 'mdast-util-from-markdown'
+import {
+  mdxExpressionFromMarkdown,
+  mdxExpressionToMarkdown
+} from 'mdast-util-mdx-expression'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
-import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
 
 test('core', async function (t) {
   await t.test('should expose the public api', async function () {
-    assert.deepEqual(Object.keys(await import('./index.js')).sort(), [
-      'mdxExpressionFromMarkdown',
-      'mdxExpressionToMarkdown'
-    ])
+    assert.deepEqual(
+      Object.keys(await import('mdast-util-mdx-expression')).sort(),
+      ['mdxExpressionFromMarkdown', 'mdxExpressionToMarkdown']
+    )
   })
 })
 
