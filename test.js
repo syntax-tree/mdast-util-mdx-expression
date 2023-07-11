@@ -16,14 +16,14 @@ test('core', async function (t) {
   })
 })
 
-test('mdxExpressionFromMarkdown', async function (t) {
+test('mdxExpressionFromMarkdown()', async function (t) {
   await t.test(
     'should support a flow expression (agnostic)',
     async function () {
       assert.deepEqual(
         fromMarkdown('{1 + 1}', {
           extensions: [mdxExpression()],
-          mdastExtensions: [mdxExpressionFromMarkdown]
+          mdastExtensions: [mdxExpressionFromMarkdown()]
         }),
         {
           type: 'root',
@@ -52,7 +52,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
       assert.deepEqual(
         fromMarkdown('{\n  1 + 1\n}', {
           extensions: [mdxExpression()],
-          mdastExtensions: [mdxExpressionFromMarkdown]
+          mdastExtensions: [mdxExpressionFromMarkdown()]
         }),
         {
           type: 'root',
@@ -80,7 +80,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown('{\t \n}', {
         extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -97,7 +97,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown('{ a { b } c }', {
         extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -114,7 +114,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown('{ a /* { */ }', {
         extensions: [mdxExpression({acorn})],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -132,7 +132,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
       assert.deepEqual(
         fromMarkdown('a {1 + 1} b', {
           extensions: [mdxExpression()],
-          mdastExtensions: [mdxExpressionFromMarkdown]
+          mdastExtensions: [mdxExpressionFromMarkdown()]
         }),
         {
           type: 'root',
@@ -185,7 +185,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown('a {\t \n} c', {
         extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -211,7 +211,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown('{ a { b } c }.', {
         extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -236,7 +236,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown('{ a /* { */ }.', {
         extensions: [mdxExpression({acorn})],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -261,7 +261,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
     async function () {
       let tree = fromMarkdown('{a}.', {
         extensions: [mdxExpression({acorn, addResult: true})],
-        mdastExtensions: [mdxExpressionFromMarkdown]
+        mdastExtensions: [mdxExpressionFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -327,7 +327,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
   await t.test('should support comments in expressions', async function () {
     let tree = fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
       extensions: [mdxExpression({acorn, addResult: true})],
-      mdastExtensions: [mdxExpressionFromMarkdown]
+      mdastExtensions: [mdxExpressionFromMarkdown()]
     })
 
     removePosition(tree, {force: true})
@@ -446,7 +446,7 @@ test('mdxExpressionFromMarkdown', async function (t) {
   })
 })
 
-test('mdxExpressionToMarkdown', async function (t) {
+test('mdxExpressionToMarkdown()', async function (t) {
   await t.test('should serialize flow expressions', async function () {
     assert.deepEqual(
       toMarkdown(
@@ -460,7 +460,7 @@ test('mdxExpressionToMarkdown', async function (t) {
             {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
           ]
         },
-        {extensions: [mdxExpressionToMarkdown]}
+        {extensions: [mdxExpressionToMarkdown()]}
       ),
       '{a + b}\n\n{\nc +\n1\n}\n\n{}\n\nd\n'
     )
@@ -482,7 +482,7 @@ test('mdxExpressionToMarkdown', async function (t) {
             {type: 'text', value: '.'}
           ]
         },
-        {extensions: [mdxExpressionToMarkdown]}
+        {extensions: [mdxExpressionToMarkdown()]}
       ),
       'a {b + c}, d {e + 1}, f {}.\n'
     )
@@ -492,7 +492,7 @@ test('mdxExpressionToMarkdown', async function (t) {
     assert.deepEqual(
       toMarkdown(
         {type: 'paragraph', children: [{type: 'text', value: 'a { b'}]},
-        {extensions: [mdxExpressionToMarkdown]}
+        {extensions: [mdxExpressionToMarkdown()]}
       ),
       'a \\{ b\n'
     )
@@ -502,7 +502,7 @@ test('mdxExpressionToMarkdown', async function (t) {
     assert.deepEqual(
       toMarkdown(
         {type: 'definition', identifier: 'a', url: 'x', title: 'a\n{\nb'},
-        {extensions: [mdxExpressionToMarkdown]}
+        {extensions: [mdxExpressionToMarkdown()]}
       ),
       '[a]: x "a\n\\{\nb"\n'
     )
@@ -517,9 +517,9 @@ test('roundtrip', async function (t) {
         toMarkdown(
           fromMarkdown('  {`\n a\n `}', {
             extensions: [mdxExpression()],
-            mdastExtensions: [mdxExpressionFromMarkdown]
+            mdastExtensions: [mdxExpressionFromMarkdown()]
           }),
-          {extensions: [mdxExpressionToMarkdown]}
+          {extensions: [mdxExpressionToMarkdown()]}
         ),
         '{`\n a\n `}\n'
       )
@@ -533,9 +533,9 @@ test('roundtrip', async function (t) {
         toMarkdown(
           fromMarkdown('  {`\n    a\n  `}', {
             extensions: [mdxExpression()],
-            mdastExtensions: [mdxExpressionFromMarkdown]
+            mdastExtensions: [mdxExpressionFromMarkdown()]
           }),
-          {extensions: [mdxExpressionToMarkdown]}
+          {extensions: [mdxExpressionToMarkdown()]}
         ),
         '{`\n    a\n  `}\n'
       )
@@ -549,9 +549,9 @@ test('roundtrip', async function (t) {
         toMarkdown(
           fromMarkdown('a {`\n    b\n  `} c', {
             extensions: [mdxExpression()],
-            mdastExtensions: [mdxExpressionFromMarkdown]
+            mdastExtensions: [mdxExpressionFromMarkdown()]
           }),
-          {extensions: [mdxExpressionToMarkdown]}
+          {extensions: [mdxExpressionToMarkdown()]}
         ),
         'a {`\n    b\n  `} c\n'
       )

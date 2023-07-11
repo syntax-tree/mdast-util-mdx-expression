@@ -17,8 +17,8 @@
 *   [Install](#install)
 *   [Use](#use)
 *   [API](#api)
-    *   [`mdxExpressionFromMarkdown`](#mdxexpressionfrommarkdown)
-    *   [`mdxExpressionToMarkdown`](#mdxexpressiontomarkdown)
+    *   [`mdxExpressionFromMarkdown()`](#mdxexpressionfrommarkdown)
+    *   [`mdxExpressionToMarkdown()`](#mdxexpressiontomarkdown)
     *   [`MdxFlowExpression`](#mdxflowexpression)
     *   [`MdxTextExpression`](#mdxtextexpression)
     *   [`MdxFlowExpressionHast`](#mdxflowexpressionhast)
@@ -108,12 +108,12 @@ const doc = await fs.readFile('example.mdx')
 
 const tree = fromMarkdown(doc, {
   extensions: [mdxExpression({acorn, addResult: true})],
-  mdastExtensions: [mdxExpressionFromMarkdown]
+  mdastExtensions: [mdxExpressionFromMarkdown()]
 })
 
 console.log(tree)
 
-const out = toMarkdown(tree, {extensions: [mdxExpressionToMarkdown]})
+const out = toMarkdown(tree, {extensions: [mdxExpressionToMarkdown()]})
 
 console.log(out)
 ```
@@ -187,18 +187,28 @@ This package exports the identifiers
 [`mdxExpressionToMarkdown`][api-mdx-expression-to-markdown].
 There is no default export.
 
-### `mdxExpressionFromMarkdown`
+### `mdxExpressionFromMarkdown()`
 
-Extension for [`mdast-util-from-markdown`][mdast-util-from-markdown] to enable
-MDX expressions.
+Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown]
+to enable MDX expressions in markdown.
 
 When using the [micromark syntax extension][extension] with `addResult`, nodes
 will have a `data.estree` field set to an ESTree [`Program`][program] node.
 
-### `mdxExpressionToMarkdown`
+###### Returns
 
-Extension for [`mdast-util-to-markdown`][mdast-util-to-markdown] to enable MDX
-expressions.
+Extension for `mdast-util-from-markdown` to enable MDX expressions
+([`FromMarkdownExtension`][from-markdown-extension]).
+
+### `mdxExpressionToMarkdown()`
+
+Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown]
+to enable MDX expressions in markdown.
+
+###### Returns
+
+Extension for `mdast-util-to-markdown` to enable MDX expressions
+([`ToMarkdownExtension`][to-markdown-extension]).
 
 ### `MdxFlowExpression`
 
@@ -498,6 +508,10 @@ abide by its terms.
 [remark-mdx]: https://mdxjs.com/packages/remark-mdx/
 
 [mdx]: https://mdxjs.com
+
+[from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+
+[to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
 
 [api-mdx-expression-from-markdown]: #mdxexpressionfrommarkdown
 
