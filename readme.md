@@ -71,14 +71,14 @@ npm install mdast-util-mdx-expression
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from 'https://esm.sh/mdast-util-mdx-expression@1'
+import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from 'https://esm.sh/mdast-util-mdx-expression@2'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from 'https://esm.sh/mdast-util-mdx-expression@1?bundle'
+  import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from 'https://esm.sh/mdast-util-mdx-expression@2?bundle'
 </script>
 ```
 
