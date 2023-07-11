@@ -110,7 +110,19 @@ export interface MdxTextExpressionHast extends HastLiteral {
 // Add nodes to mdast content.
 declare module 'mdast' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface StaticPhrasingContentMap {
+  interface RootContentMap {
+    /**
+     * MDX expression node, occurring in text (phrasing).
+     */
+    mdxTextExpression: MdxTextExpression
+    /**
+     * MDX expression node, occurring in flow (block).
+     */
+    mdxFlowExpression: MdxFlowExpression
+  }
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface PhrasingContentMap {
     /**
      * MDX expression node, occurring in text (phrasing).
      */

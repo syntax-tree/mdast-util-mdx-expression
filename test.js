@@ -67,26 +67,28 @@ test('mdxExpressionFromMarkdown', () => {
     'should support a flow expression (agnostic)'
   )
 
+  let tree = fromMarkdown('{\t \n}', {
+    extensions: [mdxExpression()],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('{\t \n}', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {type: 'root', children: [{type: 'mdxFlowExpression', value: '\t \n'}]},
     'should support an empty flow expression (agnostic)'
   )
 
+  tree = fromMarkdown('{ a { b } c }', {
+    extensions: [mdxExpression()],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('{ a { b } c }', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [{type: 'mdxFlowExpression', value: ' a { b } c '}]
@@ -94,14 +96,15 @@ test('mdxExpressionFromMarkdown', () => {
     'should support an balanced braces in a flow expression (agnostic)'
   )
 
+  tree = fromMarkdown('{ a /* { */ }', {
+    extensions: [mdxExpression({acorn})],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('{ a /* { */ }', {
-        extensions: [mdxExpression({acorn})],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [{type: 'mdxFlowExpression', value: ' a /* { */ '}]
@@ -159,14 +162,15 @@ test('mdxExpressionFromMarkdown', () => {
     'should support a text expression (agnostic)'
   )
 
+  tree = fromMarkdown('a {\t \n} c', {
+    extensions: [mdxExpression()],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('a {\t \n} c', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -183,14 +187,15 @@ test('mdxExpressionFromMarkdown', () => {
     'should support an empty text expression (agnostic)'
   )
 
+  tree = fromMarkdown('{ a { b } c }.', {
+    extensions: [mdxExpression()],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('{ a { b } c }.', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -206,14 +211,15 @@ test('mdxExpressionFromMarkdown', () => {
     'should support an balanced braces in a flow expression (agnostic)'
   )
 
+  tree = fromMarkdown('{ a /* { */ }.', {
+    extensions: [mdxExpression({acorn})],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('{ a /* { */ }.', {
-        extensions: [mdxExpression({acorn})],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -229,19 +235,18 @@ test('mdxExpressionFromMarkdown', () => {
     'should support a commented-out unbalanced brace in a flow expression (gnostic)'
   )
 
+  tree = fromMarkdown('{a}.', {
+    extensions: [mdxExpression({acorn, addResult: true})],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
+  // Cheap clone to remove non-JSON values.
+  tree = JSON.parse(JSON.stringify(tree))
+
   assert.deepEqual(
-    // Cheap clone to remove non-JSON values.
-    JSON.parse(
-      JSON.stringify(
-        removePosition(
-          fromMarkdown('{a}.', {
-            extensions: [mdxExpression({acorn, addResult: true})],
-            mdastExtensions: [mdxExpressionFromMarkdown]
-          }),
-          true
-        )
-      )
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -297,19 +302,18 @@ test('mdxExpressionFromMarkdown', () => {
     'should add a `data.estree` if `addResult` was used in the syntax extension'
   )
 
+  tree = fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
+    extensions: [mdxExpression({acorn, addResult: true})],
+    mdastExtensions: [mdxExpressionFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
+  // Cheap clone to remove non-JSON values.
+  tree = JSON.parse(JSON.stringify(tree))
+
   assert.deepEqual(
-    // Cheap clone to remove non-JSON values.
-    JSON.parse(
-      JSON.stringify(
-        removePosition(
-          fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
-            extensions: [mdxExpression({acorn, addResult: true})],
-            mdastExtensions: [mdxExpressionFromMarkdown]
-          }),
-          true
-        )
-      )
-    ),
+    tree,
     {
       type: 'root',
       children: [
