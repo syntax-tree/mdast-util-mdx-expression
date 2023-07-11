@@ -47,18 +47,6 @@ export interface MdxTextExpression extends MdastLiteral {
   } & MdastLiteral['data']
 }
 
-// To do: next major: remove.
-/**
- * Deprecated: use `MdxFlowExpression`.
- */
-export type MDXFlowExpression = MdxFlowExpression
-
-// To do: next major: remove.
-/**
- * Deprecated: use `MdxTextExpression`.
- */
-export type MDXTextExpression = MdxTextExpression
-
 /**
  * MDX expression node, occurring in flow (block), for hast.
  */
