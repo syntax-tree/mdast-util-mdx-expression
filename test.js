@@ -1,149 +1,172 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import * as acorn from 'acorn'
+import {mdxExpression} from 'micromark-extension-mdx-expression'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
-import {mdxExpression} from 'micromark-extension-mdx-expression'
 import {mdxExpressionFromMarkdown, mdxExpressionToMarkdown} from './index.js'
-import * as mod from './index.js'
 
-test('core', () => {
-  assert.deepEqual(
-    Object.keys(mod).sort(),
-    ['mdxExpressionFromMarkdown', 'mdxExpressionToMarkdown'],
-    'should expose the public api'
-  )
+test('core', async function (t) {
+  await t.test('should expose the public api', async function () {
+    assert.deepEqual(Object.keys(await import('./index.js')).sort(), [
+      'mdxExpressionFromMarkdown',
+      'mdxExpressionToMarkdown'
+    ])
+  })
 })
 
-test('mdxExpressionFromMarkdown', () => {
-  assert.deepEqual(
-    fromMarkdown('{1 + 1}', {
-      extensions: [mdxExpression()],
-      mdastExtensions: [mdxExpressionFromMarkdown]
-    }),
-    {
-      type: 'root',
-      children: [
+test('mdxExpressionFromMarkdown', async function (t) {
+  await t.test(
+    'should support a flow expression (agnostic)',
+    async function () {
+      assert.deepEqual(
+        fromMarkdown('{1 + 1}', {
+          extensions: [mdxExpression()],
+          mdastExtensions: [mdxExpressionFromMarkdown]
+        }),
         {
-          type: 'mdxFlowExpression',
-          value: '1 + 1',
+          type: 'root',
+          children: [
+            {
+              type: 'mdxFlowExpression',
+              value: '1 + 1',
+              position: {
+                start: {line: 1, column: 1, offset: 0},
+                end: {line: 1, column: 8, offset: 7}
+              }
+            }
+          ],
           position: {
             start: {line: 1, column: 1, offset: 0},
             end: {line: 1, column: 8, offset: 7}
           }
         }
-      ],
-      position: {
-        start: {line: 1, column: 1, offset: 0},
-        end: {line: 1, column: 8, offset: 7}
-      }
-    },
-    'should support a flow expression (agnostic)'
+      )
+    }
   )
 
-  assert.deepEqual(
-    fromMarkdown('{\n  1 + 1\n}', {
-      extensions: [mdxExpression()],
-      mdastExtensions: [mdxExpressionFromMarkdown]
-    }),
-    {
-      type: 'root',
-      children: [
+  await t.test(
+    'should support a flow expression (agnostic)',
+    async function () {
+      assert.deepEqual(
+        fromMarkdown('{\n  1 + 1\n}', {
+          extensions: [mdxExpression()],
+          mdastExtensions: [mdxExpressionFromMarkdown]
+        }),
         {
-          type: 'mdxFlowExpression',
-          value: '\n  1 + 1\n',
+          type: 'root',
+          children: [
+            {
+              type: 'mdxFlowExpression',
+              value: '\n  1 + 1\n',
+              position: {
+                start: {line: 1, column: 1, offset: 0},
+                end: {line: 3, column: 2, offset: 11}
+              }
+            }
+          ],
           position: {
             start: {line: 1, column: 1, offset: 0},
             end: {line: 3, column: 2, offset: 11}
           }
         }
-      ],
-      position: {
-        start: {line: 1, column: 1, offset: 0},
-        end: {line: 3, column: 2, offset: 11}
-      }
-    },
-    'should support a flow expression (agnostic)'
+      )
+    }
   )
 
-  let tree = fromMarkdown('{\t \n}', {
-    extensions: [mdxExpression()],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should support an empty flow expression (agnostic)',
+    async function () {
+      const tree = fromMarkdown('{\t \n}', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  assert.deepEqual(
-    tree,
-    {type: 'root', children: [{type: 'mdxFlowExpression', value: '\t \n'}]},
-    'should support an empty flow expression (agnostic)'
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [{type: 'mdxFlowExpression', value: '\t \n'}]
+      })
+    }
   )
 
-  tree = fromMarkdown('{ a { b } c }', {
-    extensions: [mdxExpression()],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should support an balanced braces in a flow expression (agnostic)',
+    async function () {
+      const tree = fromMarkdown('{ a { b } c }', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  assert.deepEqual(
-    tree,
-    {
-      type: 'root',
-      children: [{type: 'mdxFlowExpression', value: ' a { b } c '}]
-    },
-    'should support an balanced braces in a flow expression (agnostic)'
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [{type: 'mdxFlowExpression', value: ' a { b } c '}]
+      })
+    }
   )
 
-  tree = fromMarkdown('{ a /* { */ }', {
-    extensions: [mdxExpression({acorn})],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should support a commented-out unbalanced brace in a flow expression (gnostic)',
+    async function () {
+      const tree = fromMarkdown('{ a /* { */ }', {
+        extensions: [mdxExpression({acorn})],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  assert.deepEqual(
-    tree,
-    {
-      type: 'root',
-      children: [{type: 'mdxFlowExpression', value: ' a /* { */ '}]
-    },
-    'should support a commented-out unbalanced brace in a flow expression (gnostic)'
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [{type: 'mdxFlowExpression', value: ' a /* { */ '}]
+      })
+    }
   )
 
-  assert.deepEqual(
-    fromMarkdown('a {1 + 1} b', {
-      extensions: [mdxExpression()],
-      mdastExtensions: [mdxExpressionFromMarkdown]
-    }),
-    {
-      type: 'root',
-      children: [
+  await t.test(
+    'should support a text expression (agnostic)',
+    async function () {
+      assert.deepEqual(
+        fromMarkdown('a {1 + 1} b', {
+          extensions: [mdxExpression()],
+          mdastExtensions: [mdxExpressionFromMarkdown]
+        }),
         {
-          type: 'paragraph',
+          type: 'root',
           children: [
             {
-              type: 'text',
-              value: 'a ',
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'a ',
+                  position: {
+                    start: {line: 1, column: 1, offset: 0},
+                    end: {line: 1, column: 3, offset: 2}
+                  }
+                },
+                {
+                  type: 'mdxTextExpression',
+                  value: '1 + 1',
+                  position: {
+                    start: {line: 1, column: 3, offset: 2},
+                    end: {line: 1, column: 10, offset: 9}
+                  }
+                },
+                {
+                  type: 'text',
+                  value: ' b',
+                  position: {
+                    start: {line: 1, column: 10, offset: 9},
+                    end: {line: 1, column: 12, offset: 11}
+                  }
+                }
+              ],
               position: {
                 start: {line: 1, column: 1, offset: 0},
-                end: {line: 1, column: 3, offset: 2}
-              }
-            },
-            {
-              type: 'mdxTextExpression',
-              value: '1 + 1',
-              position: {
-                start: {line: 1, column: 3, offset: 2},
-                end: {line: 1, column: 10, offset: 9}
-              }
-            },
-            {
-              type: 'text',
-              value: ' b',
-              position: {
-                start: {line: 1, column: 10, offset: 9},
                 end: {line: 1, column: 12, offset: 11}
               }
             }
@@ -153,168 +176,166 @@ test('mdxExpressionFromMarkdown', () => {
             end: {line: 1, column: 12, offset: 11}
           }
         }
-      ],
-      position: {
-        start: {line: 1, column: 1, offset: 0},
-        end: {line: 1, column: 12, offset: 11}
-      }
-    },
-    'should support a text expression (agnostic)'
+      )
+    }
   )
 
-  tree = fromMarkdown('a {\t \n} c', {
-    extensions: [mdxExpression()],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should support an empty text expression (agnostic)',
+    async function () {
+      const tree = fromMarkdown('a {\t \n} c', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  assert.deepEqual(
-    tree,
-    {
-      type: 'root',
-      children: [
-        {
-          type: 'paragraph',
-          children: [
-            {type: 'text', value: 'a '},
-            {type: 'mdxTextExpression', value: '\t \n'},
-            {type: 'text', value: ' c'}
-          ]
-        }
-      ]
-    },
-    'should support an empty text expression (agnostic)'
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a '},
+              {type: 'mdxTextExpression', value: '\t \n'},
+              {type: 'text', value: ' c'}
+            ]
+          }
+        ]
+      })
+    }
   )
 
-  tree = fromMarkdown('{ a { b } c }.', {
-    extensions: [mdxExpression()],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should support an balanced braces in a flow expression (agnostic)',
+    async function () {
+      const tree = fromMarkdown('{ a { b } c }.', {
+        extensions: [mdxExpression()],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  assert.deepEqual(
-    tree,
-    {
-      type: 'root',
-      children: [
-        {
-          type: 'paragraph',
-          children: [
-            {type: 'mdxTextExpression', value: ' a { b } c '},
-            {type: 'text', value: '.'}
-          ]
-        }
-      ]
-    },
-    'should support an balanced braces in a flow expression (agnostic)'
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'mdxTextExpression', value: ' a { b } c '},
+              {type: 'text', value: '.'}
+            ]
+          }
+        ]
+      })
+    }
   )
 
-  tree = fromMarkdown('{ a /* { */ }.', {
-    extensions: [mdxExpression({acorn})],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should support a commented-out unbalanced brace in a flow expression (gnostic)',
+    async function () {
+      const tree = fromMarkdown('{ a /* { */ }.', {
+        extensions: [mdxExpression({acorn})],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  assert.deepEqual(
-    tree,
-    {
-      type: 'root',
-      children: [
-        {
-          type: 'paragraph',
-          children: [
-            {type: 'mdxTextExpression', value: ' a /* { */ '},
-            {type: 'text', value: '.'}
-          ]
-        }
-      ]
-    },
-    'should support a commented-out unbalanced brace in a flow expression (gnostic)'
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'mdxTextExpression', value: ' a /* { */ '},
+              {type: 'text', value: '.'}
+            ]
+          }
+        ]
+      })
+    }
   )
 
-  tree = fromMarkdown('{a}.', {
-    extensions: [mdxExpression({acorn, addResult: true})],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test(
+    'should add a `data.estree` if `addResult` was used in the syntax extension',
+    async function () {
+      let tree = fromMarkdown('{a}.', {
+        extensions: [mdxExpression({acorn, addResult: true})],
+        mdastExtensions: [mdxExpressionFromMarkdown]
+      })
 
-  removePosition(tree, {force: true})
+      removePosition(tree, {force: true})
 
-  // Cheap clone to remove non-JSON values.
-  tree = JSON.parse(JSON.stringify(tree))
+      // Cheap clone to remove non-JSON values.
+      tree = JSON.parse(JSON.stringify(tree))
 
-  assert.deepEqual(
-    tree,
-    {
-      type: 'root',
-      children: [
-        {
-          type: 'paragraph',
-          children: [
-            {
-              type: 'mdxTextExpression',
-              value: 'a',
-              data: {
-                estree: {
-                  type: 'Program',
-                  start: 1,
-                  end: 2,
-                  body: [
-                    {
-                      type: 'ExpressionStatement',
-                      expression: {
-                        type: 'Identifier',
+      assert.deepEqual(tree, {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'mdxTextExpression',
+                value: 'a',
+                data: {
+                  estree: {
+                    type: 'Program',
+                    start: 1,
+                    end: 2,
+                    body: [
+                      {
+                        type: 'ExpressionStatement',
+                        expression: {
+                          type: 'Identifier',
+                          start: 1,
+                          end: 2,
+                          name: 'a',
+                          loc: {
+                            start: {line: 1, column: 1, offset: 1},
+                            end: {line: 1, column: 2, offset: 2}
+                          },
+                          range: [1, 2]
+                        },
                         start: 1,
                         end: 2,
-                        name: 'a',
                         loc: {
                           start: {line: 1, column: 1, offset: 1},
                           end: {line: 1, column: 2, offset: 2}
                         },
                         range: [1, 2]
-                      },
-                      start: 1,
-                      end: 2,
-                      loc: {
-                        start: {line: 1, column: 1, offset: 1},
-                        end: {line: 1, column: 2, offset: 2}
-                      },
-                      range: [1, 2]
-                    }
-                  ],
-                  sourceType: 'module',
-                  comments: [],
-                  loc: {
-                    start: {line: 1, column: 1, offset: 1},
-                    end: {line: 1, column: 2, offset: 2}
-                  },
-                  range: [1, 2]
+                      }
+                    ],
+                    sourceType: 'module',
+                    comments: [],
+                    loc: {
+                      start: {line: 1, column: 1, offset: 1},
+                      end: {line: 1, column: 2, offset: 2}
+                    },
+                    range: [1, 2]
+                  }
                 }
-              }
-            },
-            {type: 'text', value: '.'}
-          ]
-        }
-      ]
-    },
-    'should add a `data.estree` if `addResult` was used in the syntax extension'
+              },
+              {type: 'text', value: '.'}
+            ]
+          }
+        ]
+      })
+    }
   )
 
-  tree = fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
-    extensions: [mdxExpression({acorn, addResult: true})],
-    mdastExtensions: [mdxExpressionFromMarkdown]
-  })
+  await t.test('should support comments in expressions', async function () {
+    let tree = fromMarkdown('A {/*b*/ c // d\n} e {/* f */}.', {
+      extensions: [mdxExpression({acorn, addResult: true})],
+      mdastExtensions: [mdxExpressionFromMarkdown]
+    })
 
-  removePosition(tree, {force: true})
+    removePosition(tree, {force: true})
 
-  // Cheap clone to remove non-JSON values.
-  tree = JSON.parse(JSON.stringify(tree))
+    // Cheap clone to remove non-JSON values.
+    tree = JSON.parse(JSON.stringify(tree))
 
-  assert.deepEqual(
-    tree,
-    {
+    assert.deepEqual(tree, {
       type: 'root',
       children: [
         {
@@ -421,104 +442,119 @@ test('mdxExpressionFromMarkdown', () => {
           ]
         }
       ]
-    },
-    'should support comments in expressions'
-  )
+    })
+  })
 })
 
-test('mdxExpressionToMarkdown', () => {
-  assert.deepEqual(
-    toMarkdown(
-      {
-        type: 'root',
-        children: [
-          {type: 'mdxFlowExpression', value: 'a + b'},
-          {type: 'mdxFlowExpression', value: '\nc +\n1\n'},
-          // @ts-expect-error: `value` missing.
-          {type: 'mdxFlowExpression'},
-          {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
-        ]
-      },
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    '{a + b}\n\n{\nc +\n1\n}\n\n{}\n\nd\n',
-    'should serialize flow expressions'
-  )
+test('mdxExpressionToMarkdown', async function (t) {
+  await t.test('should serialize flow expressions', async function () {
+    assert.deepEqual(
+      toMarkdown(
+        {
+          type: 'root',
+          children: [
+            {type: 'mdxFlowExpression', value: 'a + b'},
+            {type: 'mdxFlowExpression', value: '\nc +\n1\n'},
+            // @ts-expect-error: check how the runtime handles `value` missing.
+            {type: 'mdxFlowExpression'},
+            {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
+          ]
+        },
+        {extensions: [mdxExpressionToMarkdown]}
+      ),
+      '{a + b}\n\n{\nc +\n1\n}\n\n{}\n\nd\n'
+    )
+  })
 
-  assert.deepEqual(
-    toMarkdown(
-      {
-        type: 'paragraph',
-        children: [
-          {type: 'text', value: 'a '},
-          {type: 'mdxTextExpression', value: 'b + c'},
-          {type: 'text', value: ', d '},
-          {type: 'mdxTextExpression', value: 'e + 1'},
-          {type: 'text', value: ', f '},
-          // @ts-expect-error: `value` missing.
-          {type: 'mdxTextExpression'},
-          {type: 'text', value: '.'}
-        ]
-      },
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    'a {b + c}, d {e + 1}, f {}.\n',
-    'should serialize text expressions'
-  )
+  await t.test('should serialize text expressions', async function () {
+    assert.deepEqual(
+      toMarkdown(
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a '},
+            {type: 'mdxTextExpression', value: 'b + c'},
+            {type: 'text', value: ', d '},
+            {type: 'mdxTextExpression', value: 'e + 1'},
+            {type: 'text', value: ', f '},
+            // @ts-expect-error: check how the runtime handles `value` missing.
+            {type: 'mdxTextExpression'},
+            {type: 'text', value: '.'}
+          ]
+        },
+        {extensions: [mdxExpressionToMarkdown]}
+      ),
+      'a {b + c}, d {e + 1}, f {}.\n'
+    )
+  })
 
-  assert.deepEqual(
-    toMarkdown(
-      {type: 'paragraph', children: [{type: 'text', value: 'a { b'}]},
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    'a \\{ b\n',
-    'should escape `{` in text'
-  )
+  await t.test('should escape `{` in text', async function () {
+    assert.deepEqual(
+      toMarkdown(
+        {type: 'paragraph', children: [{type: 'text', value: 'a { b'}]},
+        {extensions: [mdxExpressionToMarkdown]}
+      ),
+      'a \\{ b\n'
+    )
+  })
 
-  assert.deepEqual(
-    toMarkdown(
-      {type: 'definition', identifier: 'a', url: 'x', title: 'a\n{\nb'},
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    '[a]: x "a\n\\{\nb"\n',
-    'should escape `{` at the start of a line'
-  )
+  await t.test('should escape `{` at the start of a line', async function () {
+    assert.deepEqual(
+      toMarkdown(
+        {type: 'definition', identifier: 'a', url: 'x', title: 'a\n{\nb'},
+        {extensions: [mdxExpressionToMarkdown]}
+      ),
+      '[a]: x "a\n\\{\nb"\n'
+    )
+  })
 })
 
-test('roundtrip', () => {
-  assert.deepEqual(
-    toMarkdown(
-      fromMarkdown('  {`\n a\n `}', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    '{`\n a\n `}\n',
-    'should *not* strip superfluous whitespace depending on the opening prefix, when roundtripping expressions (flow)'
+test('roundtrip', async function (t) {
+  await t.test(
+    'should *not* strip superfluous whitespace depending on the opening prefix, when roundtripping expressions (flow)',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          fromMarkdown('  {`\n a\n `}', {
+            extensions: [mdxExpression()],
+            mdastExtensions: [mdxExpressionFromMarkdown]
+          }),
+          {extensions: [mdxExpressionToMarkdown]}
+        ),
+        '{`\n a\n `}\n'
+      )
+    }
   )
 
-  assert.deepEqual(
-    toMarkdown(
-      fromMarkdown('  {`\n    a\n  `}', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    '{`\n    a\n  `}\n',
-    'should *not* strip superfluous whitespace (if there is more) when roundtripping expressions (flow)'
+  await t.test(
+    'should *not* strip superfluous whitespace (if there is more) when roundtripping expressions (flow)',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          fromMarkdown('  {`\n    a\n  `}', {
+            extensions: [mdxExpression()],
+            mdastExtensions: [mdxExpressionFromMarkdown]
+          }),
+          {extensions: [mdxExpressionToMarkdown]}
+        ),
+        '{`\n    a\n  `}\n'
+      )
+    }
   )
 
-  assert.deepEqual(
-    toMarkdown(
-      fromMarkdown('a {`\n    b\n  `} c', {
-        extensions: [mdxExpression()],
-        mdastExtensions: [mdxExpressionFromMarkdown]
-      }),
-      {extensions: [mdxExpressionToMarkdown]}
-    ),
-    'a {`\n    b\n  `} c\n',
-    'should not strip consecutive lines in expressions (text)'
+  await t.test(
+    'should not strip consecutive lines in expressions (text)',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          fromMarkdown('a {`\n    b\n  `} c', {
+            extensions: [mdxExpression()],
+            mdastExtensions: [mdxExpressionFromMarkdown]
+          }),
+          {extensions: [mdxExpressionToMarkdown]}
+        ),
+        'a {`\n    b\n  `} c\n'
+      )
+    }
   )
 })
