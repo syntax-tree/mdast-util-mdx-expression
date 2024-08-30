@@ -270,6 +270,7 @@ test('mdxExpressionFromMarkdown()', async function (t) {
       removePosition(tree, {force: true})
 
       // Cheap clone to remove non-JSON values.
+      // eslint-disable-next-line unicorn/prefer-structured-clone -- `JSON` to drop instances.
       tree = JSON.parse(JSON.stringify(tree))
 
       assert.deepEqual(tree, {
@@ -336,6 +337,7 @@ test('mdxExpressionFromMarkdown()', async function (t) {
     removePosition(tree, {force: true})
 
     // Cheap clone to remove non-JSON values.
+    // eslint-disable-next-line unicorn/prefer-structured-clone -- `JSON` to drop instances.
     tree = JSON.parse(JSON.stringify(tree))
 
     assert.deepEqual(tree, {

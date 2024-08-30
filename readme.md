@@ -12,27 +12,27 @@
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When to use this](#when-to-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`mdxExpressionFromMarkdown()`](#mdxexpressionfrommarkdown)
-    *   [`mdxExpressionToMarkdown()`](#mdxexpressiontomarkdown)
-    *   [`MdxFlowExpression`](#mdxflowexpression)
-    *   [`MdxTextExpression`](#mdxtextexpression)
-    *   [`MdxFlowExpressionHast`](#mdxflowexpressionhast)
-    *   [`MdxTextExpressionHast`](#mdxtextexpressionhast)
-*   [HTML](#html)
-*   [Syntax](#syntax)
-*   [Syntax tree](#syntax-tree)
-    *   [Nodes](#nodes)
-    *   [Content model](#content-model)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When to use this](#when-to-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`mdxExpressionFromMarkdown()`](#mdxexpressionfrommarkdown)
+  * [`mdxExpressionToMarkdown()`](#mdxexpressiontomarkdown)
+  * [`MdxFlowExpression`](#mdxflowexpression)
+  * [`MdxTextExpression`](#mdxtextexpression)
+  * [`MdxFlowExpressionHast`](#mdxflowexpressionhast)
+  * [`MdxTextExpressionHast`](#mdxtextexpressionhast)
+* [HTML](#html)
+* [Syntax](#syntax)
+* [Syntax tree](#syntax-tree)
+  * [Nodes](#nodes)
+  * [Content model](#content-model)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Related](#related)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
@@ -418,12 +418,12 @@ This utility works with `mdast-util-from-markdown` version 2+ and
 
 ## Related
 
-*   [`remarkjs/remark-mdx`][remark-mdx]
-    — remark plugin to support MDX
-*   [`syntax-tree/mdast-util-mdx`][mdast-util-mdx]
-    — mdast utility to support MDX
-*   [`micromark/micromark-extension-mdx-expression`][extension]
-    — micromark extension to parse MDX expressions
+* [`remarkjs/remark-mdx`][remark-mdx]
+  — remark plugin to support MDX
+* [`syntax-tree/mdast-util-mdx`][mdast-util-mdx]
+  — mdast utility to support MDX
+* [`micromark/micromark-extension-mdx-expression`][extension]
+  — micromark extension to parse MDX expressions
 
 ## Contribute
 
