@@ -50,7 +50,7 @@ test('mdxExpressionFromMarkdown()', async function (t) {
   )
 
   await t.test(
-    'should support a flow expression (agnostic)',
+    'should support an indented flow expression (agnostic)',
     async function () {
       assert.deepEqual(
         fromMarkdown('{\n  1 + 1\n}', {
@@ -62,7 +62,7 @@ test('mdxExpressionFromMarkdown()', async function (t) {
           children: [
             {
               type: 'mdxFlowExpression',
-              value: '\n  1 + 1\n',
+              value: '\n1 + 1\n',
               position: {
                 start: {line: 1, column: 1, offset: 0},
                 end: {line: 3, column: 2, offset: 11}
@@ -467,7 +467,7 @@ test('mdxExpressionToMarkdown()', async function (t) {
         },
         {extensions: [mdxExpressionToMarkdown()]}
       ),
-      '{a + b}\n\n{\nc +\n1\n}\n\n{}\n\nd\n'
+      '{a + b}\n\n{\n  c +\n  1\n}\n\n{}\n\nd\n'
     )
   })
 
@@ -516,7 +516,7 @@ test('mdxExpressionToMarkdown()', async function (t) {
 
 test('roundtrip', async function (t) {
   await t.test(
-    'should *not* strip superfluous whitespace depending on the opening prefix, when roundtripping expressions (flow)',
+    'should strip superfluous whitespace depending on the opening prefix, when roundtripping expressions (flow)',
     async function () {
       assert.deepEqual(
         toMarkdown(
@@ -526,7 +526,7 @@ test('roundtrip', async function (t) {
           }),
           {extensions: [mdxExpressionToMarkdown()]}
         ),
-        '{`\n a\n `}\n'
+        '{`\n  a\n  `}\n'
       )
     }
   )
