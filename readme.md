@@ -390,12 +390,13 @@ somewhere in your types, as that registers the new node types in the tree.
 
 ```js
 /**
- * @typedef {import('mdast-util-mdx-expression')}
+ * @import {} from 'mdast-util-mdx-expression'
+ * @import {Root} from 'mdast'
  */
 
 import {visit} from 'unist-util-visit'
 
-/** @type {import('mdast').Root} */
+/** @type {Root} */
 const tree = getMdastNodeSomeHow()
 
 visit(tree, function (node) {
