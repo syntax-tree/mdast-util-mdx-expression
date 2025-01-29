@@ -8,7 +8,8 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[mdast][] extensions to parse and serialize [MDX][] expressions (`{Math.PI}`).
+[mdast][github-mdast] extensions to parse and serialize [MDX][mdxjs]
+expressions (`{Math.PI}`).
 
 ## Contents
 
@@ -37,12 +38,12 @@
 ## What is this?
 
 This package contains two extensions that add support for MDX expression syntax
-in markdown to [mdast][].
+in markdown to [mdast][github-mdast].
 These extensions plug into
-[`mdast-util-from-markdown`][mdast-util-from-markdown] (to support parsing
-expressions in markdown into a syntax tree) and
-[`mdast-util-to-markdown`][mdast-util-to-markdown] (to support serializing
-expressions in syntax trees to markdown).
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown]
+(to support parsing expressions in markdown into a syntax tree) and
+[`mdast-util-to-markdown`][github-mdast-util-to-markdown]
+(to support serializing expressions in syntax trees to markdown).
 
 ## When to use this
 
@@ -50,14 +51,15 @@ You can use these extensions when you are working with
 `mdast-util-from-markdown` and `mdast-util-to-markdown` already.
 
 When working with `mdast-util-from-markdown`, you must combine this package
-with [`micromark-extension-mdx-expression`][extension].
+with
+[`micromark-extension-mdx-expression`][github-mm-extension-expression].
 
 When you are working with syntax trees and want all of MDX, use
-[`mdast-util-mdx`][mdast-util-mdx] instead.
+[`mdast-util-mdx`][github-mdast-util-mdx] instead.
 
-All these packages are used in [`remark-mdx`][remark-mdx], which
-focusses on making it easier to transform content by abstracting these
-internals away.
+All these packages are used in [`remark-mdx`][github-remark-mdx],
+which focusses on making it easier to transform content by abstracting
+these internals away.
 
 ## Install
 
@@ -189,26 +191,31 @@ There is no default export.
 
 ### `mdxExpressionFromMarkdown()`
 
-Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown]
+Create an extension for
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown]
 to enable MDX expressions in markdown.
 
-When using the [micromark syntax extension][extension] with `addResult`, nodes
-will have a `data.estree` field set to an ESTree [`Program`][program] node.
+When using the
+[micromark syntax extension][github-mm-extension-expression]
+with `addResult`,
+nodes will have a `data.estree` field set to an ESTree
+[`Program`][github-estree-program] node.
 
 ###### Returns
 
 Extension for `mdast-util-from-markdown` to enable MDX expressions
-([`FromMarkdownExtension`][from-markdown-extension]).
+([`FromMarkdownExtension`][github-mdast-util-from-markdown-extension]).
 
 ### `mdxExpressionToMarkdown()`
 
-Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown]
+Create an extension for
+[`mdast-util-to-markdown`][github-mdast-util-to-markdown]
 to enable MDX expressions in markdown.
 
 ###### Returns
 
 Extension for `mdast-util-to-markdown` to enable MDX expressions
-([`ToMarkdownExtension`][to-markdown-extension]).
+([`ToMarkdownExtension`][github-mdast-util-to-markdown-extension]).
 
 ### `MdxFlowExpression`
 
@@ -297,16 +304,18 @@ interface MdxTextExpressionData extends Data {
 MDX expressions have no representation in HTML.
 Though, when you are dealing with MDX, you will likely go *through* hast.
 You can enable passing MDX expressions through to hast by configuring
-[`mdast-util-to-hast`][mdast-util-to-hast] with
+[`mdast-util-to-hast`][github-mdast-util-to-hast] with
 `passThrough: ['mdxFlowExpression', 'mdxTextExpression']`.
 
 ## Syntax
 
-See [Syntax in `micromark-extension-mdx-expression`][syntax].
+See [Syntax in
+`micromark-extension-mdx-expression`](https://github.com/micromark/micromark-extension-mdx-expression#syntax).
 
 ## Syntax tree
 
-The following interfaces are added to **[mdast][]** by this utility.
+The following interfaces are added to **[mdast][github-mdast]**
+by this utility.
 
 ### Nodes
 
@@ -318,9 +327,9 @@ interface MdxFlowExpression <: Literal {
 }
 ```
 
-**MdxFlowExpression** (**[Literal][dfn-literal]**) represents a JavaScript
-expression embedded in flow (block).
-It can be used where **[flow][dfn-flow-content]** content is expected.
+**MdxFlowExpression** (**[Literal][github-mdast-literal]**)
+represents a JavaScript expression embedded in flow (block).
+It can be used where **[flow][api-flow-content]** content is expected.
 Its content is represented by its `value` field.
 
 For example, the following markdown:
@@ -345,9 +354,9 @@ interface MdxTextExpression <: Literal {
 }
 ```
 
-**MdxTextExpression** (**[Literal][dfn-literal]**) represents a JavaScript
-expression embedded in text (span, inline).
-It can be used where **[phrasing][dfn-phrasing-content]** content is expected.
+**MdxTextExpression** (**[Literal][github-mdast-literal]**)
+represents a JavaScript expression embedded in text (span, inline).
+It can be used where **[phrasing][api-phrasing-content]** content is expected.
 Its content is represented by its `value` field.
 
 For example, the following markdown:
@@ -419,20 +428,20 @@ This utility works with `mdast-util-from-markdown` version 2+ and
 
 ## Related
 
-* [`remarkjs/remark-mdx`][remark-mdx]
+* [`remark-mdx`][github-remark-mdx]
   — remark plugin to support MDX
-* [`syntax-tree/mdast-util-mdx`][mdast-util-mdx]
+* [`mdast-util-mdx`][github-mdast-util-mdx]
   — mdast utility to support MDX
-* [`micromark/micromark-extension-mdx-expression`][extension]
+* [`micromark-extension-mdx-expression`][github-mm-extension-expression]
   — micromark extension to parse MDX expressions
 
 ## Contribute
 
-See [`contributing.md`][contributing] in [`syntax-tree/.github`][health] for
-ways to get started.
-See [`support.md`][support] for ways to get help.
+See [`contributing.md`][health-contributing] in
+[`syntax-tree/.github`][health] for ways to get started.
+See [`support.md`][health-support] for ways to get help.
 
-This project has a [code of conduct][coc].
+This project has a [code of conduct][health-coc].
 By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
@@ -442,77 +451,7 @@ abide by its terms.
 
 <!-- Definitions -->
 
-[build-badge]: https://github.com/syntax-tree/mdast-util-mdx-expression/workflows/main/badge.svg
-
-[build]: https://github.com/syntax-tree/mdast-util-mdx-expression/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-mdx-expression.svg
-
-[coverage]: https://codecov.io/github/syntax-tree/mdast-util-mdx-expression
-
-[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-mdx-expression.svg
-
-[downloads]: https://www.npmjs.com/package/mdast-util-mdx-expression
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-mdx-expression
-
-[size]: https://bundlejs.com/?q=mdast-util-mdx-expression
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/syntax-tree/unist/discussions
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[esmsh]: https://esm.sh
-
-[typescript]: https://www.typescriptlang.org
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[health]: https://github.com/syntax-tree/.github
-
-[contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
-
-[support]: https://github.com/syntax-tree/.github/blob/main/support.md
-
-[coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
-
-[mdast]: https://github.com/syntax-tree/mdast
-
-[mdast-util-to-hast]: https://github.com/syntax-tree/mdast-util-to-hast
-
-[mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
-
-[mdast-util-to-markdown]: https://github.com/syntax-tree/mdast-util-to-markdown
-
-[mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
-
-[extension]: https://github.com/micromark/micromark-extension-mdx-expression
-
-[syntax]: https://github.com/micromark/micromark-extension-mdx-expression#syntax
-
-[program]: https://github.com/estree/estree/blob/master/es2015.md#programs
-
-[dfn-literal]: https://github.com/syntax-tree/mdast#literal
-
-[remark-mdx]: https://mdxjs.com/packages/remark-mdx/
-
-[mdx]: https://mdxjs.com
-
-[from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
-
-[to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+[api-flow-content]: #flowcontent-mdx-expression
 
 [api-mdx-expression-from-markdown]: #mdxexpressionfrommarkdown
 
@@ -520,12 +459,80 @@ abide by its terms.
 
 [api-mdx-flow-expression]: #mdxflowexpression
 
-[api-mdx-text-expression]: #mdxtextexpression
-
 [api-mdx-flow-expression-hast]: #mdxflowexpressionhast
+
+[api-mdx-text-expression]: #mdxtextexpression
 
 [api-mdx-text-expression-hast]: #mdxtextexpressionhast
 
-[dfn-flow-content]: #flowcontent-mdx-expression
+[api-phrasing-content]: #phrasingcontent-mdx-expression
 
-[dfn-phrasing-content]: #phrasingcontent-mdx-expression
+[author]: https://wooorm.com
+
+[backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+[build]: https://github.com/syntax-tree/mdast-util-mdx-expression/actions
+
+[build-badge]: https://github.com/syntax-tree/mdast-util-mdx-expression/workflows/main/badge.svg
+
+[chat]: https://github.com/syntax-tree/unist/discussions
+
+[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
+
+[collective]: https://opencollective.com/unified
+
+[coverage]: https://codecov.io/github/syntax-tree/mdast-util-mdx-expression
+
+[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-mdx-expression.svg
+
+[downloads]: https://www.npmjs.com/package/mdast-util-mdx-expression
+
+[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-mdx-expression.svg
+
+[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[esmsh]: https://esm.sh
+
+[github-estree-program]: https://github.com/estree/estree/blob/master/es2015.md#programs
+
+[github-mdast]: https://github.com/syntax-tree/mdast
+
+[github-mdast-literal]: https://github.com/syntax-tree/mdast#literal
+
+[github-mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
+
+[github-mdast-util-from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+
+[github-mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
+
+[github-mdast-util-to-hast]: https://github.com/syntax-tree/mdast-util-to-hast
+
+[github-mdast-util-to-markdown]: https://github.com/syntax-tree/mdast-util-to-markdown
+
+[github-mdast-util-to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+
+[github-mm-extension-expression]: https://github.com/micromark/micromark-extension-mdx-expression
+
+[github-remark-mdx]: https://mdxjs.com/packages/remark-mdx/
+
+[health]: https://github.com/syntax-tree/.github
+
+[health-coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
+
+[health-contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
+
+[health-support]: https://github.com/syntax-tree/.github/blob/main/support.md
+
+[license]: license
+
+[mdxjs]: https://mdxjs.com
+
+[npm]: https://docs.npmjs.com/cli/install
+
+[size]: https://bundlejs.com/?q=mdast-util-mdx-expression
+
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-mdx-expression
+
+[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+[typescript]: https://www.typescriptlang.org
